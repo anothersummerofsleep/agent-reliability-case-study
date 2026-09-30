@@ -1,0 +1,32 @@
+[project]
+name = "agent-reliability-case-study"
+version = "0.0.1"
+description = "Evaluation-first LangGraph agent-reliability case study (portfolio-scale, fictional industrial-ops domain)"
+readme = "README.md"
+requires-python = ">=3.11"
+# License intentionally unset: this repo is private during development; the
+# license decision is part of the pre-publication review (see docs/decisions).
+dependencies = [
+    "pydantic>=2.7",
+    "langgraph>=0.2",
+    "langchain>=0.3",
+    "langchain-google-genai>=2.0",
+    "langsmith>=0.1",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/agent_reliability"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
