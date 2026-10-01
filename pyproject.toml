@@ -12,6 +12,7 @@ dependencies = [
     "langchain>=0.3",
     "langchain-google-genai>=2.0",
     "langsmith>=0.1",
+    "python-dotenv>=1.0",
 ]
 
 [project.optional-dependencies]

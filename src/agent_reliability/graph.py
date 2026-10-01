@@ -145,6 +145,15 @@ def run_incident(
 
 
 def _main(argv: list[str]) -> int:
+    # Load .env for live runs (real environment variables take precedence). Done only in
+    # the CLI entrypoint so library imports and tests stay side-effect-free.
+    try:
+        from dotenv import load_dotenv
+
+        load_dotenv(override=False)
+    except ImportError:
+        pass
+
     incident = argv[1] if len(argv) > 1 else "RTU-40 unit 3 tripped NW-A11, discharge 415 psi, condenser coil fouled"
     tracing = os.environ.get("LANGSMITH_TRACING", "").lower() in ("1", "true", "yes")
     state = run_incident("cli-001", incident)
