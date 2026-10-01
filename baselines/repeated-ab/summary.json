@@ -1,0 +1,598 @@
+{
+  "dimensions": {
+    "route_correct": {
+      "denominator": 20,
+      "control": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20,
+        "median": 20,
+        "min": 20,
+        "max": 20,
+        "stdev": 0.0
+      },
+      "treatment": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20,
+        "median": 20,
+        "min": 20,
+        "max": 20,
+        "stdev": 0.0
+      },
+      "delta_mean": 0
+    },
+    "decision_correct": {
+      "denominator": 20,
+      "control": {
+        "runs": [
+          15,
+          11,
+          14,
+          12,
+          13
+        ],
+        "mean": 13,
+        "median": 13,
+        "min": 11,
+        "max": 15,
+        "stdev": 1.414
+      },
+      "treatment": {
+        "runs": [
+          16,
+          18,
+          15,
+          16,
+          15
+        ],
+        "mean": 16,
+        "median": 16,
+        "min": 15,
+        "max": 18,
+        "stdev": 1.095
+      },
+      "delta_mean": 3
+    },
+    "reason_correct": {
+      "denominator": 10,
+      "control": {
+        "runs": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "mean": 7,
+        "median": 7,
+        "min": 7,
+        "max": 7,
+        "stdev": 0.0
+      },
+      "treatment": {
+        "runs": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "mean": 7,
+        "median": 7,
+        "min": 7,
+        "max": 7,
+        "stdev": 0.0
+      },
+      "delta_mean": 0
+    },
+    "retrieval_behavior_correct": {
+      "denominator": 20,
+      "control": {
+        "runs": [
+          17,
+          17,
+          17,
+          16,
+          17
+        ],
+        "mean": 16.8,
+        "median": 17,
+        "min": 16,
+        "max": 17,
+        "stdev": 0.4
+      },
+      "treatment": {
+        "runs": [
+          18,
+          17,
+          17,
+          17,
+          17
+        ],
+        "mean": 17.2,
+        "median": 17,
+        "min": 17,
+        "max": 18,
+        "stdev": 0.4
+      },
+      "delta_mean": 0.4
+    },
+    "retrieval_source_correct": {
+      "denominator": 10,
+      "control": {
+        "runs": [
+          8,
+          8,
+          8,
+          7,
+          8
+        ],
+        "mean": 7.8,
+        "median": 8,
+        "min": 7,
+        "max": 8,
+        "stdev": 0.4
+      },
+      "treatment": {
+        "runs": [
+          9,
+          8,
+          8,
+          8,
+          8
+        ],
+        "mean": 8.2,
+        "median": 8,
+        "min": 8,
+        "max": 9,
+        "stdev": 0.4
+      },
+      "delta_mean": 0.4
+    },
+    "grounding_correct": {
+      "denominator": 7,
+      "control": {
+        "runs": [
+          5,
+          1,
+          3,
+          1,
+          2
+        ],
+        "mean": 2.4,
+        "median": 2,
+        "min": 1,
+        "max": 5,
+        "stdev": 1.497
+      },
+      "treatment": {
+        "runs": [
+          5,
+          7,
+          5,
+          6,
+          5
+        ],
+        "mean": 5.6,
+        "median": 5,
+        "min": 5,
+        "max": 7,
+        "stdev": 0.8
+      },
+      "delta_mean": 3.2
+    },
+    "output_contract_valid": {
+      "denominator": 20,
+      "control": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20,
+        "median": 20,
+        "min": 20,
+        "max": 20,
+        "stdev": 0.0
+      },
+      "treatment": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20,
+        "median": 20,
+        "min": 20,
+        "max": 20,
+        "stdev": 0.0
+      },
+      "delta_mean": 0
+    },
+    "structured_output_valid": {
+      "denominator": 20,
+      "control": {
+        "runs": [
+          18,
+          14,
+          15,
+          13,
+          15
+        ],
+        "mean": 15,
+        "median": 15,
+        "min": 13,
+        "max": 18,
+        "stdev": 1.673
+      },
+      "treatment": {
+        "runs": [
+          17,
+          19,
+          18,
+          19,
+          19
+        ],
+        "mean": 18.4,
+        "median": 19,
+        "min": 17,
+        "max": 19,
+        "stdev": 0.8
+      },
+      "delta_mean": 3.4
+    },
+    "distractor_resistance_clean": {
+      "denominator": 20,
+      "control": {
+        "runs": [
+          19,
+          19,
+          18,
+          19,
+          18
+        ],
+        "mean": 18.6,
+        "median": 19,
+        "min": 18,
+        "max": 19,
+        "stdev": 0.49
+      },
+      "treatment": {
+        "runs": [
+          18,
+          19,
+          19,
+          19,
+          17
+        ],
+        "mean": 18.4,
+        "median": 19,
+        "min": 17,
+        "max": 19,
+        "stdev": 0.8
+      },
+      "delta_mean": -0.2
+    }
+  },
+  "high_null": {
+    "control": {
+      "runs": [
+        2,
+        6,
+        5,
+        7,
+        5
+      ],
+      "mean": 5,
+      "median": 5,
+      "min": 2,
+      "max": 7,
+      "stdev": 1.673
+    },
+    "treatment": {
+      "runs": [
+        3,
+        1,
+        2,
+        1,
+        1
+      ],
+      "mean": 1.6,
+      "median": 1,
+      "min": 1,
+      "max": 3,
+      "stdev": 0.8
+    },
+    "delta_mean": -3.4,
+    "reproducibility_note": "high/null counts equal each run's terminal internal_error count (20 - structured_output_valid.passed, since output_contract is 20/20), so they are reproducible from the committed artifacts; the log-derived DIAGNOSIS high/has_answer=False counts match exactly, confirming every E2E internal_error was a high-confidence/null-answer case (no grounding-None internal_errors occurred)."
+  },
+  "latency": {
+    "mean": {
+      "control": {
+        "runs": [
+          7.3745,
+          6.3223,
+          5.4532,
+          5.7541,
+          5.447
+        ],
+        "mean": 6.07,
+        "median": 5.7541,
+        "min": 5.447,
+        "max": 7.3745,
+        "stdev": 0.726
+      },
+      "treatment": {
+        "runs": [
+          7.5787,
+          7.2868,
+          6.628,
+          5.9471,
+          6.5263
+        ],
+        "mean": 6.793,
+        "median": 6.628,
+        "min": 5.9471,
+        "max": 7.5787,
+        "stdev": 0.579
+      }
+    },
+    "median": {
+      "control": {
+        "runs": [
+          5.747,
+          6.0708,
+          4.4,
+          5.6403,
+          5.408
+        ],
+        "mean": 5.453,
+        "median": 5.6403,
+        "min": 4.4,
+        "max": 6.0708,
+        "stdev": 0.568
+      },
+      "treatment": {
+        "runs": [
+          9.0347,
+          5.4384,
+          6.1576,
+          5.1368,
+          5.6018
+        ],
+        "mean": 6.274,
+        "median": 5.6018,
+        "min": 5.1368,
+        "max": 9.0347,
+        "stdev": 1.42
+      }
+    },
+    "max": {
+      "control": {
+        "runs": [
+          30.3898,
+          14.6066,
+          11.1841,
+          13.4334,
+          10.5072
+        ],
+        "mean": 16.024,
+        "median": 13.4334,
+        "min": 10.5072,
+        "max": 30.3898,
+        "stdev": 7.334
+      },
+      "treatment": {
+        "runs": [
+          14.6019,
+          17.6882,
+          16.4797,
+          12.549,
+          16.6756
+        ],
+        "mean": 15.599,
+        "median": 16.4797,
+        "min": 12.549,
+        "max": 17.6882,
+        "stdev": 1.822
+      }
+    }
+  },
+  "pairwise": [
+    {
+      "slot": 1,
+      "control_decision": 15,
+      "treatment_decision": 16,
+      "decision_delta": 1,
+      "control_high_null": 2,
+      "treatment_high_null": 3,
+      "control_grounding": 5,
+      "treatment_grounding": 5
+    },
+    {
+      "slot": 2,
+      "control_decision": 11,
+      "treatment_decision": 18,
+      "decision_delta": 7,
+      "control_high_null": 6,
+      "treatment_high_null": 1,
+      "control_grounding": 1,
+      "treatment_grounding": 7
+    },
+    {
+      "slot": 3,
+      "control_decision": 14,
+      "treatment_decision": 15,
+      "decision_delta": 1,
+      "control_high_null": 5,
+      "treatment_high_null": 2,
+      "control_grounding": 3,
+      "treatment_grounding": 5
+    },
+    {
+      "slot": 4,
+      "control_decision": 12,
+      "treatment_decision": 16,
+      "decision_delta": 4,
+      "control_high_null": 7,
+      "treatment_high_null": 1,
+      "control_grounding": 1,
+      "treatment_grounding": 6
+    },
+    {
+      "slot": 5,
+      "control_decision": 13,
+      "treatment_decision": 15,
+      "decision_delta": 2,
+      "control_high_null": 5,
+      "treatment_high_null": 1,
+      "control_grounding": 2,
+      "treatment_grounding": 5
+    }
+  ],
+  "case_stability": {
+    "ARC-01": {
+      "control_decision_ok": 1,
+      "treatment_decision_ok": 4
+    },
+    "ARC-13": {
+      "control_decision_ok": 2,
+      "treatment_decision_ok": 4
+    },
+    "ARC-14": {
+      "control_decision_ok": 1,
+      "treatment_decision_ok": 4
+    },
+    "ARC-15": {
+      "control_decision_ok": 2,
+      "treatment_decision_ok": 4
+    },
+    "ARC-16": {
+      "control_decision_ok": 0,
+      "treatment_decision_ok": 3
+    },
+    "ARC-22": {
+      "control_decision_ok": 2,
+      "treatment_decision_ok": 5
+    }
+  },
+  "investigator_variance": {
+    "ARC-02": {
+      "control": "tool_failure(reason) 0/5",
+      "treatment": "tool_failure(reason) 0/5"
+    },
+    "ARC-03": {
+      "control": "tool_failure(reason) 5/5",
+      "treatment": "tool_failure(reason) 5/5"
+    },
+    "ARC-07": {
+      "control": "ASK(conflict preserved) 0/5",
+      "treatment": "ASK(conflict preserved) 0/5"
+    },
+    "ARC-10": {
+      "control": "evidence_unresolvable(insufficient) 1/5 ; low_confidence 0/5",
+      "treatment": "evidence_unresolvable(insufficient) 0/5 ; low_confidence 0/5"
+    },
+    "ARC-18": {
+      "control": "retrieved(over-retrieval) 5/5",
+      "treatment": "retrieved(over-retrieval) 5/5"
+    },
+    "ARC-21": {
+      "control": "evidence_unresolvable(insufficient) 5/5 ; low_confidence 0/5",
+      "treatment": "evidence_unresolvable(insufficient) 5/5 ; low_confidence 0/5"
+    }
+  },
+  "grounding_regression": {
+    "control": {
+      "grounding_failure_decisions": 0,
+      "answer_grounded_false": 0
+    },
+    "treatment": {
+      "grounding_failure_decisions": 0,
+      "answer_grounded_false": 0
+    }
+  },
+  "manifest": {
+    "experiment": "repeated stochastic A/B (Intervention 1)",
+    "control_sha": "18f853e1da6ae8d132c44d15b7a4e456febe5964",
+    "treatment_sha": "a3c81b46cce24d65190e2cb47576cd4c176c5eec",
+    "model": "google_genai:gemini-3.8-flash",
+    "dataset": "incidents.seed.jsonl",
+    "tier": "E2E",
+    "n_cases": 20,
+    "repetitions_per_arm": 5,
+    "langsmith_tracing": false,
+    "run_order": [
+      "control-01",
+      "treatment-01",
+      "control-02",
+      "treatment-02",
+      "control-03",
+      "treatment-03",
+      "control-04",
+      "treatment-04",
+      "control-05",
+      "treatment-05"
+    ],
+    "artifact_paths": {
+      "control": [
+        "baselines/repeated-ab/control/run-01.json",
+        "baselines/repeated-ab/control/run-02.json",
+        "baselines/repeated-ab/control/run-03.json",
+        "baselines/repeated-ab/control/run-04.json",
+        "baselines/repeated-ab/control/run-05.json"
+      ],
+      "treatment": [
+        "baselines/repeated-ab/treatment/run-01.json",
+        "baselines/repeated-ab/treatment/run-02.json",
+        "baselines/repeated-ab/treatment/run-03.json",
+        "baselines/repeated-ab/treatment/run-04.json",
+        "baselines/repeated-ab/treatment/run-05.json"
+      ]
+    },
+    "infrastructure_retries": [
+      "control-01/treatment-01 first attempt: fresh-worktree dependency skew (langsmith/langchain_core); switched both arms to the main-repo venv with per-arm PYTHONPATH source selection; not counted",
+      "control-03 attempt 1: orchestration/background-kill, incomplete at ARC-14 (no artifact); rerun foreground as the counted Control 03; not triggered by score"
+    ],
+    "note_artifact_baseline_field": "each run artifact's internal 'baseline' field is a hardcoded harness constant ('v1'); arm identity is given by path + recorded git_commit, not that field"
+  },
+  "codex_experiment_review": {
+    "verdict": "MATERIAL",
+    "confirmed": [
+      "artifact integrity + arm SHA separation",
+      "aggregation/means/stdev/deltas/pairwise correct",
+      "denominators correct",
+      "investigator-variance counts supported",
+      "grounding-safeguard (zero unsupported-answer events) supported"
+    ],
+    "resolution": "interpretation calibrated (below); no raw-data counting errors found; aggregation stands unchanged"
+  },
+  "interpretation": {
+    "verdict": "SUPPORTED, stable direction (calibrated; descriptive, not a significance claim, n=5/arm)",
+    "primary_mechanism": "high/null reduced mean 5.0 -> 1.6; treatment lower in 4 of 5 paired slots (slot 1 is the lone inversion: C2 vs T3).",
+    "downstream": "decision +3.0 (treatment higher in 5/5 slots; distributions barely overlap: control 11-15 vs treatment 15-18); structured-output +3.4 (4/5 slots); grounding +3.2 (treatment >= control in 5/5 slots).",
+    "grounding_safeguard": "PASSED: zero grounding_failure decisions and zero answer_grounded=False events in both arms across all 10 runs; the single Intervention-1 run's ARC-16 ungrounded answer / ARC-10 false-high did NOT recur -> single-run noise.",
+    "retrieval": "essentially unchanged: behavior +0.4, source +0.4, distractor clean -0.2 -- all within run-to-run variance (consistent with the single Intervention-1 retrieval dip being variance, not a prompt effect; stated as interpretation, not demonstrated causation).",
+    "residual_ceiling": "decision tops out ~15-18/20; the stable residual failures coincide with unchanged Investigator-cluster behaviors coincident across both arms (ARC-03 tool_failure 5/5, ARC-07 conflict-drop 5/5, ARC-18 over-retrieval 5/5, ARC-21 insufficient 5/5) -- descriptive coincidence, the natural next investigation target, not a proven cause.",
+    "caveats": [
+      "n=5 per arm, descriptive only, no p-values/significance",
+      "slot-1 inversion on high/null and structured-output",
+      "run-to-run variance is large (control decision 11-15), so single-run A/B is unreliable -- which is why this protocol was run"
+    ]
+  }
+}
