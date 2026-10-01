@@ -1,6 +1,9 @@
 from __future__ import annotations
 
-from agent_reliability.dataset import RetrievalBehavior, Tier, coverage, load_seed_cases
+import pytest
+from pydantic import ValidationError
+
+from agent_reliability.dataset import RetrievalBehavior, SeedCase, Tier, coverage, load_seed_cases
 from agent_reliability.enums import AbstainReason, Decision, EscalationReason, Route
 
 
@@ -35,3 +38,10 @@ def test_per_case_reason_and_retrieval_invariants():
 def test_both_tiers_present():
     tiers = {c.tier for c in load_seed_cases()}
     assert Tier.E2E in tiers and Tier.UNIT in tiers
+
+
+def test_prohibited_extra_field_rejected():
+    payload = load_seed_cases()[0].model_dump()
+    payload["expected_tool_call"] = "some_tool"  # tool-behavior fields are out of scope
+    with pytest.raises(ValidationError):
+        SeedCase.model_validate(payload)

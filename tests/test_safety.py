@@ -32,3 +32,15 @@ def test_plain_incident_no_hazard():
 def test_real_hazard_not_falsely_negated():
     # 'no' governs 'cooling', not the later 'smoke'
     assert detect_safety_critical("There is no cooling, but smoke is pouring from the panel.") is True
+
+
+def test_resolved_historical_then_new_active_hazard():
+    # a resolved earlier hazard must not suppress a separate new active one
+    assert detect_safety_critical(
+        "Earlier smoke was cleared, but new smoke is now pouring from the panel."
+    ) is True
+
+
+def test_isolation_of_other_object_does_not_suppress_active_hazard():
+    # isolating the unit must not suppress active smoke elsewhere in the sentence
+    assert detect_safety_critical("Smoke near the panel, unit isolated.") is True

@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from agent_reliability.contracts import GraphState, validate_final_output
-from agent_reliability.enums import Confidence, Decision, EscalationReason, Route
+from agent_reliability.contracts import Evidence, GraphState, validate_final_output
+from agent_reliability.enums import Confidence, Decision, EscalationReason, Route, SourceType
 from agent_reliability.graph import run_incident
 from agent_reliability.nodes import DiagnosisOutput
 
@@ -46,3 +46,25 @@ def test_safety_short_circuits_before_diagnosis():
     )
     assert s.decision is Decision.ESCALATE
     assert s.escalation_reason is EscalationReason.SAFETY
+
+
+def test_ask_path_produces_contract_valid_output():
+    # Inject an Investigator result with a user-resolvable gap so the graph emits ASK.
+    def evidence_insufficient(state: GraphState) -> dict:
+        return {
+            "evidence": [Evidence(source_id=f"incident:{state.incident_id}", source_type=SourceType.INCIDENT_PROVIDED, content=state.incident_raw)],
+            "evidence_sufficient": False,
+            "evidence_conflict": False,
+            "tool_failed": False,
+            "gap_user_resolvable": True,
+        }
+
+    s = run_incident(
+        "t4",
+        "CH-2 doesn't seem to be cooling well today.",
+        diagnose_fn=fake_diagnose,
+        evidence_fn=evidence_insufficient,
+    )
+    assert s.decision is Decision.ASK
+    assert s.clarifying_question is not None
+    validate_final_output(s)

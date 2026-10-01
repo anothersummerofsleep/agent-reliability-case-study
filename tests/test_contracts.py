@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import pytest
+from pydantic import ValidationError
 
 from agent_reliability.contracts import (
     Evidence,
@@ -8,7 +9,7 @@ from agent_reliability.contracts import (
     OutputContractError,
     validate_final_output,
 )
-from agent_reliability.enums import Confidence, Decision, Route, SourceType
+from agent_reliability.enums import AbstainReason, Confidence, Decision, Route, SourceType
 
 EV = [Evidence(source_id="i", source_type=SourceType.INCIDENT_PROVIDED, content="c")]
 
@@ -60,3 +61,25 @@ def test_escalate_requires_reason():
 def test_abstain_requires_reason():
     with pytest.raises(OutputContractError):
         validate_final_output(base(route=Route.OUT_OF_SCOPE, decision=Decision.ABSTAIN, abstain_reason=None))
+
+
+def test_out_of_scope_requires_abstain_reason():
+    with pytest.raises(OutputContractError):
+        validate_final_output(base(route=Route.OUT_OF_SCOPE, decision=Decision.ESCALATE, escalation_reason=None, abstain_reason=None))
+
+
+def test_abstain_reason_rejected_on_non_out_of_scope_route():
+    with pytest.raises(OutputContractError):
+        validate_final_output(base(route=Route.INVESTIGATE, decision=Decision.ANSWER, confidence=Confidence.HIGH, proposed_answer="x", answer_grounded=True, evidence=EV, abstain_reason=AbstainReason.OUT_OF_DOMAIN))
+
+
+def test_abstain_requires_out_of_scope_route():
+    with pytest.raises(OutputContractError):
+        validate_final_output(base(route=Route.INVESTIGATE, decision=Decision.ABSTAIN, abstain_reason=AbstainReason.OUT_OF_DOMAIN))
+
+
+def test_empty_evidence_item_rejected_at_construction():
+    with pytest.raises(ValidationError):
+        Evidence(source_id="", source_type=SourceType.INCIDENT_PROVIDED, content="x")
+    with pytest.raises(ValidationError):
+        Evidence(source_id="i", source_type=SourceType.INCIDENT_PROVIDED, content="")
