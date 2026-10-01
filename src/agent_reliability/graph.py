@@ -26,8 +26,6 @@ from .nodes import (
     EvidenceFn,
     GroundFn,
     RouterFn,
-    default_evidence,
-    default_ground,
     default_router,
     intake,
     make_diagnosis_node,
@@ -35,6 +33,8 @@ from .nodes import (
     make_grounding_node,
     make_initial_state,
     make_llm_diagnose,
+    make_llm_ground,
+    make_llm_investigator,
     make_router_node,
 )
 from .policy import evaluate_policy
@@ -80,16 +80,37 @@ def build_graph(
     router_fn: RouterFn | None = None,
     evidence_fn: EvidenceFn | None = None,
 ):
-    """Compile the Phase 0 graph. Inject fakes for offline tests; leave ``diagnose_fn``
-    as ``None`` for a lazily-constructed real model on live runs."""
+    """Compile the Phase 1 graph. Inject fakes for offline tests; leave the model-backed
+    functions as ``None`` for lazily-constructed real components on live runs.
+
+    The real Investigator, Diagnosis Specialist, and Grounding Validator share a single
+    chat model, built lazily on first use so the graph compiles without credentials."""
     router_fn = router_fn or default_router
-    evidence_fn = evidence_fn or default_evidence
-    ground_fn = ground_fn or default_ground
+
+    _shared: dict = {}
+
+    def _model():
+        if "model" not in _shared:
+            _shared["model"] = make_chat_model()
+        return _shared["model"]
+
+    if evidence_fn is None:
+        def evidence_fn(state: GraphState):
+            if "investigator" not in _shared:
+                _shared["investigator"] = make_llm_investigator(_model())
+            return _shared["investigator"](state)
 
     if diagnose_fn is None:
+        def diagnose_fn(state: GraphState):
+            if "diagnose" not in _shared:
+                _shared["diagnose"] = make_llm_diagnose(_model())
+            return _shared["diagnose"](state)
 
-        def diagnose_fn(state: GraphState):  # lazy: only builds the model when invoked
-            return make_llm_diagnose(make_chat_model())(state)
+    if ground_fn is None:
+        def ground_fn(state: GraphState):
+            if "ground" not in _shared:
+                _shared["ground"] = make_llm_ground(_model())
+            return _shared["ground"](state)
 
     g = StateGraph(GraphState)
     g.add_node("intake", intake)
