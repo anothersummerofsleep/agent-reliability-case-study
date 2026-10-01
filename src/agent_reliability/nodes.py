@@ -309,7 +309,13 @@ _DIAGNOSIS_SYSTEM = (
     "evidence does not support a confident recommendation), and gap_user_resolvable (true only if "
     "a specific detail the requester could supply would resolve a remaining uncertainty, else "
     "null). If you must rely on unstated knowledge to answer, lower your confidence and set "
-    "proposed_answer to null instead."
+    "proposed_answer to null instead. "
+    "Confidence and proposed_answer must stay consistent: if confidence is 'high', proposed_answer "
+    "MUST be non-null and supported solely by the supplied incident facts and the provenance-bearing "
+    "Northwind evidence. If you cannot produce such a supported answer without introducing unstated "
+    "domain knowledge, do not choose 'high' - choose the appropriate lower confidence and represent "
+    "the unresolved gap using the existing fields. Never invent a proposed answer merely to satisfy "
+    "this rule."
 )
 
 
