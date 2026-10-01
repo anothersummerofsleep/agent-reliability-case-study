@@ -15,8 +15,10 @@ controlled contract/validator tests, not model-performance examples.
 from __future__ import annotations
 
 import json
+import logging
 import os
 import subprocess
+import sys
 import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
@@ -354,6 +356,13 @@ def _print_summary(artifact: dict) -> None:
 
 
 def _main(argv: list[str]) -> int:
+    # Diagnostic logging to stderr so the per-case TRIAGE / DIAGNOSIS / GROUNDING lines
+    # and any swallowed-exception traces are visible during a debug run.
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(levelname)s %(name)s | %(message)s",
+        stream=sys.stderr,
+    )
     try:
         from dotenv import load_dotenv
 
@@ -368,6 +377,4 @@ def _main(argv: list[str]) -> int:
 
 
 if __name__ == "__main__":
-    import sys
-
     raise SystemExit(_main(sys.argv))

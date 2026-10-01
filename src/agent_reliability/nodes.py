@@ -14,7 +14,8 @@ both of which the terminal policy checkpoint turns into ESCALATE(internal_error)
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+import logging
+from dataclasses import dataclass
 from typing import Callable, Optional
 
 from pydantic import BaseModel, Field
@@ -23,6 +24,11 @@ from .contracts import Evidence, GraphState
 from .enums import AbstainReason, Confidence, Route, SourceType
 from .retrieval import DEFAULT_K, BM25Retriever, default_retriever
 from .safety import detect_safety_critical
+
+# Diagnostic logger. Emits to stderr only when a handler is configured (the CLI entry
+# points do this); library imports and tests stay quiet by default. Instrumentation
+# never changes control flow - fail-closed behavior is identical with or without it.
+logger = logging.getLogger("agent_reliability.diagnostics")
 
 # Injected function signatures.
 DiagnoseFn = Callable[[GraphState], "DiagnosisOutput"]
@@ -137,6 +143,16 @@ class Investigator:
     def __call__(self, state: GraphState) -> dict:
         evidence: list[Evidence] = [_incident_evidence(state)]
         plan = self.triage(state)
+        logger.info(
+            "TRIAGE id=%s supplied_sufficient=%s needs_retrieval=%s needs_telemetry=%s conflict=%s gap=%s query=%r",
+            state.incident_id,
+            plan.supplied_sufficient,
+            plan.needs_retrieval,
+            plan.needs_live_telemetry,
+            plan.evidence_conflict,
+            plan.gap_user_resolvable,
+            (plan.retrieval_query or "")[:80],
+        )
 
         # Live-telemetry branch: attempt the (unbacked) tool with bounded retries.
         if plan.needs_live_telemetry:
@@ -194,6 +210,14 @@ class Investigator:
             query = assessment.more_query or query
 
         assert assessment is not None  # MAX_RETRIEVAL_ATTEMPTS >= 1
+        logger.info(
+            "RETRIEVAL id=%s retrieved=%s sufficient=%s conflict=%s gap=%s",
+            state.incident_id,
+            retrieved,
+            assessment.evidence_sufficient,
+            assessment.evidence_conflict,
+            assessment.gap_user_resolvable,
+        )
         return {
             "evidence": evidence,
             "evidence_sufficient": assessment.evidence_sufficient,
@@ -309,10 +333,28 @@ def make_diagnosis_node(diagnose_fn: DiagnoseFn) -> Callable[[GraphState], dict]
     def _node(state: GraphState) -> dict:
         try:
             out = diagnose_fn(state)
-        except Exception:
-            return {}  # fail-closed: no confidence -> ESCALATE(internal_error) at terminal
-        if out is None:
+        except Exception as exc:
+            # Fail-closed: no confidence -> ESCALATE(internal_error) at terminal. Behavior
+            # is unchanged; we only surface what was previously swallowed.
+            logger.error(
+                "DIAGNOSIS ERROR id=%s type=%s msg=%s",
+                state.incident_id,
+                type(exc).__name__,
+                exc,
+                exc_info=True,
+            )
             return {}
+        if out is None:
+            logger.error("DIAGNOSIS ERROR id=%s type=NoneOutput msg=diagnose_fn returned None", state.incident_id)
+            return {}
+        logger.info(
+            "DIAGNOSIS id=%s confidence=%s has_answer=%s gap=%s n_hypotheses=%d",
+            state.incident_id,
+            out.confidence.value if out.confidence else None,
+            out.proposed_answer is not None,
+            out.gap_user_resolvable,
+            len(out.hypotheses),
+        )
         # Diagnosis owns gap_user_resolvable at the terminal checkpoint (rule 6). It runs
         # after checkpoint B has already consumed the Investigator's value for rules 4/5,
         # so Diagnosis always writes its own value - including an explicit None - to avoid
@@ -365,9 +407,18 @@ def make_grounding_node(ground_fn: GroundFn) -> Callable[[GraphState], dict]:
             return {"answer_grounded": None}
         try:
             grounded = ground_fn(state)
-        except Exception:
+        except Exception as exc:
             # Malformed validator execution -> leave None -> ESCALATE(internal_error).
+            # Behavior unchanged; we only surface the previously-swallowed failure.
+            logger.error(
+                "GROUNDING ERROR id=%s type=%s msg=%s",
+                state.incident_id,
+                type(exc).__name__,
+                exc,
+                exc_info=True,
+            )
             return {"answer_grounded": None}
+        logger.info("GROUNDING id=%s answer_grounded=%s", state.incident_id, grounded)
         return {"answer_grounded": grounded}
 
     return _node
