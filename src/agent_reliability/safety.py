@@ -61,11 +61,24 @@ def _clause_start(text: str, pos: int) -> int:
     )
 
 
-def _sentence_bounds(text: str, start: int, end: int) -> tuple[int, int]:
-    b = _clause_start(text, start)
-    candidates = [x for x in (text.find(".", end), text.find(";", end), text.find("\n", end)) if x != -1]
-    e = min(candidates) if candidates else len(text)
-    return b + 1, e
+# Resolution/isolation is scoped LOCALLY to the hazard's own segment (split on
+# clause punctuation, commas, and "but"), so a resolved historical hazard or the
+# isolation of a different object cannot suppress a separate active hazard in the
+# same sentence. Negation (below) stays clause-wide so a leading "no" can still
+# distribute across a coordinated list ("no smoke, fire, or burning smell").
+_SEGMENT_BOUNDARY = re.compile(r"[.;,\n]|\bbut\b")
+
+
+def _segment_for(text: str, hazard_start: int, hazard_end: int) -> str:
+    seg_start = 0
+    seg_end = len(text)
+    for m in _SEGMENT_BOUNDARY.finditer(text):
+        if m.end() <= hazard_start:
+            seg_start = m.end()
+        elif m.start() >= hazard_end:
+            seg_end = m.start()
+            break
+    return text[seg_start:seg_end]
 
 
 def _is_negated(text: str, hazard_start: int) -> bool:
@@ -84,9 +97,8 @@ def _is_negated(text: str, hazard_start: int) -> bool:
 
 
 def _is_resolved(text: str, hazard_start: int, hazard_end: int) -> bool:
-    b, e = _sentence_bounds(text, hazard_start, hazard_end)
-    sentence = text[b:e]
-    return any(cue in sentence for cue in RESOLUTION_CUES)
+    segment = _segment_for(text, hazard_start, hazard_end)
+    return any(cue in segment for cue in RESOLUTION_CUES)
 
 
 def detect_safety_critical(incident_raw: str) -> bool:

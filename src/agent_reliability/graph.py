@@ -19,6 +19,7 @@ import sys
 from langgraph.graph import END, START, StateGraph
 
 from .contracts import GraphState, validate_final_output
+from .enums import Decision
 from .model import make_chat_model
 from .nodes import (
     DiagnoseFn,
@@ -50,6 +51,12 @@ def _make_checkpoint(*, terminal: bool):
         }
         if result.abstain_reason is not None:
             update["abstain_reason"] = result.abstain_reason
+        if result.decision is Decision.ASK and state.clarifying_question is None:
+            # Phase 0 stub so an ASK terminates with a contract-valid clarifying_question.
+            # Real drafting (by the node that identifies the gap) is a later phase.
+            update["clarifying_question"] = (
+                "Could you provide the specific readings or details needed to proceed?"
+            )
         return update
 
     return _node

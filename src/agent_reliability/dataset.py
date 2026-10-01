@@ -11,7 +11,7 @@ from enum import Enum
 from pathlib import Path
 from typing import Optional
 
-from pydantic import BaseModel, Field, model_validator
+from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 from .enums import AbstainReason, Decision, EscalationReason, Route
 
@@ -31,6 +31,10 @@ class Tier(str, Enum):
 
 
 class SeedCase(BaseModel):
+    # Reject unknown fields so a prohibited tool-behavior field (deliberately out of
+    # scope) cannot silently enter the dataset schema.
+    model_config = ConfigDict(extra="forbid")
+
     id: str
     title: str
     input: str

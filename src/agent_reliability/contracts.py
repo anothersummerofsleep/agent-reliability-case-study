@@ -31,11 +31,12 @@ from .enums import (
 class Evidence(BaseModel):
     """A provenance-bearing evidence item. Provenance is what makes an ANSWER
     groundable; it may be requester-supplied (``incident_provided``) rather than
-    retrieved."""
+    retrieved. ``source_id`` and ``content`` must be non-empty so an empty item
+    cannot masquerade as grounding."""
 
-    source_id: str
+    source_id: str = Field(min_length=1)
     source_type: SourceType
-    content: str
+    content: str = Field(min_length=1)
 
 
 class GraphState(BaseModel):
@@ -91,6 +92,13 @@ def validate_final_output(state: GraphState) -> None:
     if not state.trace_id:
         raise OutputContractError("terminal state has no trace_id")
 
+    # Route / abstain_reason relationship (frozen contract: non-null iff OUT_OF_SCOPE).
+    if state.route is Route.OUT_OF_SCOPE:
+        if state.abstain_reason is None:
+            raise OutputContractError("OUT_OF_SCOPE requires an abstain_reason")
+    elif state.abstain_reason is not None:
+        raise OutputContractError("abstain_reason set on a non-OUT_OF_SCOPE route")
+
     if state.decision is Decision.ANSWER:
         if state.confidence is not Confidence.HIGH:
             raise OutputContractError("ANSWER requires confidence == high")
@@ -112,5 +120,7 @@ def validate_final_output(state: GraphState) -> None:
             raise OutputContractError("ESCALATE requires an escalation_reason")
 
     elif state.decision is Decision.ABSTAIN:
+        if state.route is not Route.OUT_OF_SCOPE:
+            raise OutputContractError("ABSTAIN requires route == OUT_OF_SCOPE")
         if state.abstain_reason is None:
             raise OutputContractError("ABSTAIN requires an abstain_reason")
