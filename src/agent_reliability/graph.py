@@ -20,7 +20,7 @@ from langgraph.graph import END, START, StateGraph
 
 from .contracts import GraphState, validate_final_output
 from .enums import Decision
-from .model import make_chat_model
+from .model import DEFAULT_MODEL_ID, make_chat_model
 from .nodes import (
     DiagnoseFn,
     EvidenceFn,
@@ -162,9 +162,11 @@ def _main(argv: list[str]) -> int:
         pass
 
     incident = argv[1] if len(argv) > 1 else "RTU-40 unit 3 tripped NW-A11, discharge 415 psi, condenser coil fouled"
+    model_id = os.environ.get("MODEL_ID", DEFAULT_MODEL_ID)
     tracing = os.environ.get("LANGSMITH_TRACING", "").lower() in ("1", "true", "yes")
     state = run_incident("cli-001", incident)
     print(f"incident   : {incident}")
+    print(f"model      : {model_id}")
     print(f"trace_id   : {state.trace_id}")
     print(f"route      : {state.route.value if state.route else None}")
     print(f"decision   : {state.decision.value if state.decision else None}")
