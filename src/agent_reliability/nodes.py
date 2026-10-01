@@ -164,7 +164,19 @@ class Investigator:
         retrieved: list[str] = []
         assessment: Optional[EvidenceAssessment] = None
         for _ in range(MAX_RETRIEVAL_ATTEMPTS):
-            for hit in self.retriever.search(query, k=self.k):
+            try:
+                hits = self.retriever.search(query, k=self.k)
+            except Exception:
+                # Retrieval (a tool) failed: expose it cleanly as tool failure rather
+                # than crash, so the policy produces ESCALATE(tool_failure).
+                return {
+                    "evidence": evidence,
+                    "evidence_sufficient": False,
+                    "evidence_conflict": False,
+                    "gap_user_resolvable": plan.gap_user_resolvable,
+                    "tool_failed": True,
+                }
+            for hit in hits:
                 if hit.doc_id in retrieved:
                     continue
                 retrieved.append(hit.doc_id)
@@ -301,15 +313,16 @@ def make_diagnosis_node(diagnose_fn: DiagnoseFn) -> Callable[[GraphState], dict]
             return {}  # fail-closed: no confidence -> ESCALATE(internal_error) at terminal
         if out is None:
             return {}
-        update: dict = {
+        # Diagnosis owns gap_user_resolvable at the terminal checkpoint (rule 6). It runs
+        # after checkpoint B has already consumed the Investigator's value for rules 4/5,
+        # so Diagnosis always writes its own value - including an explicit None - to avoid
+        # a stale Investigator gap misrouting ASK vs ESCALATE(low_confidence).
+        return {
             "confidence": out.confidence,
             "proposed_answer": out.proposed_answer,
             "hypotheses": out.hypotheses,
+            "gap_user_resolvable": out.gap_user_resolvable,
         }
-        # Only overwrite the Investigator's gap when Diagnosis identifies its own.
-        if out.gap_user_resolvable is not None:
-            update["gap_user_resolvable"] = out.gap_user_resolvable
-        return update
 
     return _node
 

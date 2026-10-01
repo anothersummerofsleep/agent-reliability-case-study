@@ -31,11 +31,13 @@ def test_structured_output_parsed_onto_state():
     assert update["hypotheses"] == ["fouled coil"]
 
 
-def test_gap_set_only_when_diagnosis_returns_one():
-    without = make_diagnosis_node(
+def test_diagnosis_owns_terminal_gap_including_null():
+    # Diagnosis runs after checkpoint B, so it always writes its own gap (incl. None) to
+    # avoid a stale Investigator value misrouting rule 6 at the terminal checkpoint.
+    null_gap = make_diagnosis_node(
         make_llm_diagnose(FakeModel(DiagnosisOutput(confidence=Confidence.MEDIUM, proposed_answer=None)))
     )(_state())
-    assert "gap_user_resolvable" not in without  # preserves the Investigator's value
+    assert null_gap["gap_user_resolvable"] is None
 
     withgap = make_diagnosis_node(
         make_llm_diagnose(
@@ -43,6 +45,23 @@ def test_gap_set_only_when_diagnosis_returns_one():
         )
     )(_state())
     assert withgap["gap_user_resolvable"] is True
+
+
+def test_diagnosis_null_gap_overrides_stale_investigator_gap():
+    # Investigator set gap True; Diagnosis returns medium confidence with null gap.
+    # The terminal policy must ESCALATE(low_confidence), not ASK on the stale True.
+    from agent_reliability.enums import Decision, EscalationReason
+    from agent_reliability.policy import evaluate_policy
+
+    state = _state(evidence_sufficient=True, evidence_conflict=False, gap_user_resolvable=True)
+    update = make_diagnosis_node(
+        make_llm_diagnose(FakeModel(DiagnosisOutput(confidence=Confidence.MEDIUM, proposed_answer=None)))
+    )(state)
+    for k, v in update.items():
+        setattr(state, k, v)
+    result = evaluate_policy(state, terminal=True)
+    assert result.decision is Decision.ESCALATE
+    assert result.escalation_reason is EscalationReason.LOW_CONFIDENCE
 
 
 def test_parse_failure_fails_closed():

@@ -131,6 +131,79 @@ def test_escalation_reason_mismatch_detected():
     assert r.scores["reason_correct"] is False
 
 
+def test_allowed_behavior_is_scored():
+    case = CASES["ARC-02"]  # allowed
+    ran_no_fetch = score_case(
+        case, _state("ARC-02", route=Route.INVESTIGATE, decision=Decision.ASK,
+                     gap_user_resolvable=True, clarifying_question="?",
+                     evidence=[_incident("ARC-02")]),
+        contract_valid=True, latency_s=0.1,
+    )
+    assert ran_no_fetch.scores["retrieval_behavior_correct"] is True  # ran, no retrieval -> ok
+    fetched = score_case(
+        case, _state("ARC-02", route=Route.INVESTIGATE, decision=Decision.ASK,
+                     gap_user_resolvable=True, clarifying_question="?",
+                     evidence=[_incident("ARC-02"), _manual("DOC-CHW-EFF")]),
+        contract_valid=True, latency_s=0.1,
+    )
+    assert fetched.scores["retrieval_behavior_correct"] is True  # retrieved -> also ok
+    not_run = score_case(
+        case, _state("ARC-02", route=Route.INVESTIGATE, decision=Decision.ASK,
+                     gap_user_resolvable=True, clarifying_question="?", evidence=None),
+        contract_valid=True, latency_s=0.1,
+    )
+    assert not_run.scores["retrieval_behavior_correct"] is False  # should have run
+
+
+def test_distractor_counted_even_without_case_label():
+    case = CASES["ARC-01"]  # no distractor_ids on this case
+    s = _state("ARC-01", route=Route.INVESTIGATE, decision=Decision.ANSWER, answer_grounded=True,
+               evidence=[_incident("ARC-01"), _manual("DOC-RTU-A11"), _manual("DOC-AHU-VFD")])
+    r = score_case(case, s, contract_valid=True, latency_s=0.1)
+    assert r.scores["distractor_pulled"] is True  # DOC-AHU-VFD is a canonical distractor
+    assert r.observed["pulled_distractors"] == ["DOC-AHU-VFD"]
+
+
+def test_structured_output_invalid_on_fail_closed_internal_error():
+    from agent_reliability.enums import EscalationReason
+
+    case = CASES["ARC-01"]  # gold ANSWER; a terminal internal_error means a fail-closed fault
+    s = _state("ARC-01", route=Route.INVESTIGATE, decision=Decision.ESCALATE,
+               escalation_reason=EscalationReason.INTERNAL_ERROR,
+               evidence=[_incident("ARC-01")])
+    r = score_case(case, s, contract_valid=True, latency_s=0.1)
+    assert r.scores["output_contract_valid"] is True   # the terminal output is contract-valid
+    assert r.scores["structured_output_valid"] is False  # but it fell closed -> not valid
+
+
+def test_aggregate_survives_exception_shaped_result():
+    # Mirrors run_baseline's exception path; aggregate must not KeyError.
+    from agent_reliability.evaluate import CaseResult
+
+    err = CaseResult(
+        id="ARC-14", tier="E2E",
+        expected={"route": "INVESTIGATE", "decision": "ANSWER", "reason": None,
+                  "retrieval_behavior": "required", "retrieval_ids": ["DOC-RTU-A11"],
+                  "distractor_ids": ["DOC-RTU-CYCLE"]},
+        observed={"error": "boom", "retrieved_ids": [], "pulled_distractors": [],
+                  "output_contract_valid": False, "latency_s": 0.0},
+        scores={"route_correct": False, "decision_correct": False, "reason_correct": None,
+                "retrieval_behavior_correct": None, "retrieval_source_correct": None,
+                "distractor_pulled": False, "grounding_correct": None,
+                "output_contract_valid": False, "structured_output_valid": False},
+    )
+    agg = aggregate([err])  # must not raise
+    assert agg["n_cases"] == 1
+    assert agg["distractor_resistance"]["clean"] == 1
+
+
+def test_median_even_count():
+    from agent_reliability.evaluate import _median
+
+    assert _median([0.1, 0.3, 0.5, 0.7]) == 0.4  # mean of two middles
+    assert _median([0.1, 0.2, 0.9]) == 0.2       # true middle for odd count
+
+
 def test_aggregate_has_no_composite_and_counts_applicable_only():
     case = CASES["ARC-01"]
     good = score_case(

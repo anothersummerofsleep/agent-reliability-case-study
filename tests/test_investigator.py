@@ -119,6 +119,25 @@ def test_default_telemetry_raises():
         default_telemetry(_state())
 
 
+class _FailingRetriever:
+    def search(self, query, k=2):
+        raise RuntimeError("retrieval backend down")
+
+    def doc(self, doc_id):  # pragma: no cover - never reached
+        raise KeyError(doc_id)
+
+
+def test_retrieval_failure_exposed_as_tool_failed():
+    inv = Investigator(
+        triage=lambda s: TriagePlan(supplied_sufficient=False, needs_retrieval=True, retrieval_query="NW-A11"),
+        assess=lambda s, e: EvidenceAssessment(evidence_sufficient=True),
+        retriever=_FailingRetriever(),
+    )
+    out = inv(_state())
+    assert out["tool_failed"] is True  # clean exposure, not a crash
+    assert out["evidence_sufficient"] is False
+
+
 def test_gap_passthrough_from_triage_on_skip():
     inv = Investigator(
         triage=lambda s: TriagePlan(

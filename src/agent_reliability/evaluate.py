@@ -25,11 +25,22 @@ from typing import Optional
 
 from .contracts import GraphState, OutputContractError, validate_final_output
 from .dataset import DEFAULT_DATASET, RetrievalBehavior, SeedCase, Tier, load_seed_cases
-from .enums import Decision, Route, SourceType
+from .enums import Decision, EscalationReason, Route, SourceType
 from .model import DEFAULT_MODEL_ID
-from .retrieval import DEFAULT_K
+from .retrieval import DEFAULT_K, load_corpus
 
 DEFAULT_ARTIFACT = Path(__file__).resolve().parents[2] / "baselines" / "baseline-v1.json"
+
+_CANONICAL_DISTRACTORS: Optional[set[str]] = None
+
+
+def canonical_distractors() -> set[str]:
+    """Doc ids flagged as distractors in the corpus (retrieving any is a precision error,
+    regardless of whether a given case named it as its targeted trap)."""
+    global _CANONICAL_DISTRACTORS
+    if _CANONICAL_DISTRACTORS is None:
+        _CANONICAL_DISTRACTORS = {d.doc_id for d in load_corpus() if d.is_distractor}
+    return _CANONICAL_DISTRACTORS
 
 
 # --- pure scoring ---------------------------------------------------------
@@ -71,8 +82,16 @@ class CaseResult:
     scores: dict
 
 
-def score_case(case: SeedCase, state: GraphState, *, contract_valid: bool, latency_s: float) -> CaseResult:
+def score_case(
+    case: SeedCase,
+    state: GraphState,
+    *,
+    contract_valid: bool,
+    latency_s: float,
+    distractors: Optional[set[str]] = None,
+) -> CaseResult:
     """Score one executed case against its gold label across the measured dimensions."""
+    distractors = canonical_distractors() if distractors is None else distractors
     r_ids = retrieved_ids(state)
     behavior = observed_retrieval_behavior(state)
     exp_reason, obs_reason = _reason_fields(case, state)
@@ -84,7 +103,7 @@ def score_case(case: SeedCase, state: GraphState, *, contract_valid: bool, laten
     reason_correct: Optional[bool]
     reason_correct = (exp_reason == obs_reason) if exp_reason is not None else None
 
-    # retrieval-behavior correctness (allowed is not scored -> None)
+    # retrieval-behavior correctness (all four frozen categories are scored)
     eb = case.expected_retrieval_behavior
     if eb is RetrievalBehavior.REQUIRED:
         behavior_correct: Optional[bool] = behavior == "retrieved"
@@ -92,8 +111,8 @@ def score_case(case: SeedCase, state: GraphState, *, contract_valid: bool, laten
         behavior_correct = behavior == "no_retrieval"
     elif eb is RetrievalBehavior.NOT_APPLICABLE:
         behavior_correct = behavior == "not_run"
-    else:  # allowed
-        behavior_correct = None
+    else:  # allowed: Investigator must run; fetch or skip both pass, not_run fails
+        behavior_correct = behavior in ("retrieved", "no_retrieval")
 
     # retrieval-source correctness (only meaningful for 'required')
     if eb is RetrievalBehavior.REQUIRED:
@@ -101,11 +120,19 @@ def score_case(case: SeedCase, state: GraphState, *, contract_valid: bool, laten
     else:
         source_correct = None
 
-    distractor_pulled = bool(set(case.distractor_ids) & set(r_ids))
+    # distractor precision: retrieving ANY canonical distractor is an error
+    pulled_distractors = sorted(set(r_ids) & distractors)
+    distractor_pulled = bool(pulled_distractors)
 
     # grounding correctness where gold behavior exists (ANSWER expects grounded True)
     grounding_correct: Optional[bool]
     grounding_correct = (state.answer_grounded is True) if case.expected_decision is Decision.ANSWER else None
+
+    # structured-output validity: contract-valid AND not a fail-closed internal_error.
+    # In the E2E set internal_error is never the gold outcome, so a terminal internal_error
+    # signals a structured-output / fail-closed fault (malformed diagnosis or grounding).
+    fell_closed = state.decision is Decision.ESCALATE and state.escalation_reason is EscalationReason.INTERNAL_ERROR
+    structured_output_valid = contract_valid and not fell_closed
 
     return CaseResult(
         id=case.id,
@@ -124,8 +151,9 @@ def score_case(case: SeedCase, state: GraphState, *, contract_valid: bool, laten
             "reason": obs_reason,
             "retrieval_behavior": behavior,
             "retrieved_ids": r_ids,
+            "pulled_distractors": pulled_distractors,
             "answer_grounded": state.answer_grounded,
-            "contract_valid": contract_valid,
+            "output_contract_valid": contract_valid,
             "latency_s": round(latency_s, 4),
             "trace_id": state.trace_id,
         },
@@ -137,7 +165,8 @@ def score_case(case: SeedCase, state: GraphState, *, contract_valid: bool, laten
             "retrieval_source_correct": source_correct,
             "distractor_pulled": distractor_pulled,
             "grounding_correct": grounding_correct,
-            "structured_output_valid": contract_valid,
+            "output_contract_valid": contract_valid,
+            "structured_output_valid": structured_output_valid,
         },
     )
 
@@ -155,12 +184,26 @@ def _rate(results: list[CaseResult], key: str) -> dict:
     }
 
 
+def _median(xs: list[float]) -> Optional[float]:
+    if not xs:
+        return None
+    s = sorted(xs)
+    n = len(s)
+    mid = n // 2
+    return s[mid] if n % 2 else round((s[mid - 1] + s[mid]) / 2, 4)
+
+
 def aggregate(results: list[CaseResult]) -> dict:
     """Per-dimension aggregates. No composite score, by design."""
-    latencies = sorted(r.observed["latency_s"] for r in results)
+    latencies = [r.observed.get("latency_s", 0.0) for r in results]
     n = len(latencies)
-    distractor_cases = [r for r in results if r.expected["distractor_ids"]]
-    distractor_errs = [r.id for r in distractor_cases if r.scores["distractor_pulled"]]
+    # distractor resistance is measured over EVERY case: retrieving any canonical
+    # distractor is a precision error, not only on cases that named it as their trap.
+    pulled = [
+        {"id": r.id, "distractors": r.observed.get("pulled_distractors", [])}
+        for r in results
+        if r.scores.get("distractor_pulled")
+    ]
     return {
         "n_cases": len(results),
         "route_correct": _rate(results, "route_correct"),
@@ -169,17 +212,17 @@ def aggregate(results: list[CaseResult]) -> dict:
         "retrieval_behavior_correct": _rate(results, "retrieval_behavior_correct"),
         "retrieval_source_correct": _rate(results, "retrieval_source_correct"),
         "grounding_correct": _rate(results, "grounding_correct"),
+        "output_contract_valid": _rate(results, "output_contract_valid"),
         "structured_output_valid": _rate(results, "structured_output_valid"),
         "distractor_resistance": {
-            "distractor_cases": [r.id for r in distractor_cases],
-            "pulled_distractor": distractor_errs,
-            "clean": len(distractor_cases) - len(distractor_errs),
-            "total": len(distractor_cases),
+            "clean": len(results) - len(pulled),
+            "total": len(results),
+            "pulled_distractor": pulled,
         },
         "latency_s": {
             "mean": round(sum(latencies) / n, 4) if n else None,
-            "median": latencies[n // 2] if n else None,
-            "max": latencies[-1] if n else None,
+            "median": _median(latencies),
+            "max": max(latencies) if n else None,
         },
     }
 
@@ -218,6 +261,11 @@ def run_baseline(
             state = run_incident(case.id, case.input, validate=False)
         except Exception as exc:  # a crash is a (bad) baseline result, recorded not hidden
             latency = time.perf_counter() - start
+            exp_reason = (
+                case.expected_escalation_reason.value if case.expected_escalation_reason
+                else case.expected_abstain_reason.value if case.expected_abstain_reason
+                else None
+            )
             results.append(
                 CaseResult(
                     id=case.id,
@@ -225,9 +273,18 @@ def run_baseline(
                     expected={
                         "route": case.expected_route.value,
                         "decision": case.expected_decision.value,
+                        "reason": exp_reason,
                         "retrieval_behavior": case.expected_retrieval_behavior.value,
+                        "retrieval_ids": case.expected_retrieval_ids,
+                        "distractor_ids": case.distractor_ids,
                     },
-                    observed={"error": repr(exc), "latency_s": round(latency, 4)},
+                    observed={
+                        "error": repr(exc),
+                        "retrieved_ids": [],
+                        "pulled_distractors": [],
+                        "output_contract_valid": False,
+                        "latency_s": round(latency, 4),
+                    },
                     scores={
                         "route_correct": False,
                         "decision_correct": False,
@@ -236,6 +293,7 @@ def run_baseline(
                         "retrieval_source_correct": None,
                         "distractor_pulled": False,
                         "grounding_correct": None,
+                        "output_contract_valid": False,
                         "structured_output_valid": False,
                     },
                 )
@@ -284,6 +342,7 @@ def _print_summary(artifact: dict) -> None:
         "retrieval_behavior_correct",
         "retrieval_source_correct",
         "grounding_correct",
+        "output_contract_valid",
         "structured_output_valid",
     ):
         d = agg[dim]
