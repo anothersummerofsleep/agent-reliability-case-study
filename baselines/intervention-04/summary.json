@@ -1,0 +1,160 @@
+{
+  "experiment": "Controlled Intervention 4 - propagate triage conflict into Investigator reassessment (information-flow)",
+  "pre_i4_head_revert_sha": "fa8fdc61353fa0ed50676939e73089a7680cec87",
+  "auditability_sha": "baf279891b2a864906913600c283505aee0346fe",
+  "implementation_sha": "fe291c3bf512243317e6b0da869164b5719ce336",
+  "model": "google_genai:gemini-3.8-flash",
+  "dataset": "incidents.seed.jsonl",
+  "tier": "E2E",
+  "n_cases": 20,
+  "post_change_runs": 5,
+  "infrastructure_retries": [],
+  "change": "assess signature gains prior_conflict (=plan.evidence_conflict is True); assess prompt treats a true prior flag as an already-observed conflict and MUST classify gap_user_resolvable when prior-or-current conflict exists. Monotonic merge (triage OR assessment) unchanged; EvidenceAssessment schema unchanged.",
+  "primary_mechanism": {
+    "arc07_gap": {
+      "before_i2_i3": "None 5/5 (never classified)",
+      "i4": "None 0/5 -> True 1/5, False 4/5"
+    },
+    "arc07_ask": {
+      "before": "0/5",
+      "i4": "1/5"
+    },
+    "arc07_conflict": "True 5/5 (preserved)",
+    "interpretation": "The information-flow fires: reassessment now receives the prior conflict and ALWAYS classifies resolvability (gap=None eliminated). But the model judges ARC-07's SAT discrepancy requester-UNresolvable 4/5 (gap=False -> ESCALATE(conflict_unresolvable)) and requester-resolvable only 1/5 (gap=True -> ASK). The remaining miss is a model resolvability-judgment limit, not a plumbing failure."
+  },
+  "contrast_arc08": {
+    "result": "conflict True + gap False + ESCALATE(conflict_unresolvable) 5/5 - correct discrimination preserved; ARC-08 never flipped to resolvable."
+  },
+  "regression_surface": {
+    "arc16_spurious_ask": {
+      "i2": "0/5",
+      "i3": "1/5",
+      "i4": "2/5 (runs 1-2: evidence_conflict+gap_user_resolvable=True -> ASK; gold ANSWER/skip)",
+      "note": "MATERIAL: the conflict-resolvability prompting induces a spurious conflict-driven ASK on the non-conflict ARC-16 when triage varies it into the retrieval branch; worse than I3."
+    },
+    "arc03_gap_true_run1": "inert: ARC-03 routes through the telemetry branch (tool_failure), never reaches the changed reassessment; its gap came from triage and does not drive the decision.",
+    "other": "no other non-gold gap=True, ASK, or conflict_unresolvable outside ARC-07/08/16."
+  },
+  "dimension_distributions": {
+    "route_correct": {
+      "intervention_02": 20,
+      "intervention_04": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "delta_vs_i2": 0
+    },
+    "decision_correct": {
+      "intervention_02": 16,
+      "intervention_04": {
+        "runs": [
+          15,
+          17,
+          15,
+          15,
+          17
+        ],
+        "mean": 15.8
+      },
+      "delta_vs_i2": -0.2
+    },
+    "reason_correct": {
+      "intervention_02": 7,
+      "intervention_04": {
+        "runs": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "mean": 7
+      },
+      "delta_vs_i2": 0
+    },
+    "retrieval_behavior_correct": {
+      "intervention_02": 16.8,
+      "intervention_04": {
+        "runs": [
+          17,
+          17,
+          17,
+          17,
+          17
+        ],
+        "mean": 17
+      },
+      "delta_vs_i2": 0.2
+    },
+    "retrieval_source_correct": {
+      "intervention_02": 7.8,
+      "intervention_04": {
+        "runs": [
+          8,
+          8,
+          8,
+          8,
+          8
+        ],
+        "mean": 8
+      },
+      "delta_vs_i2": 0.2
+    },
+    "grounding_correct": {
+      "intervention_02": 6,
+      "intervention_04": {
+        "runs": [
+          5,
+          6,
+          5,
+          5,
+          5
+        ],
+        "mean": 5.2
+      },
+      "delta_vs_i2": -0.8
+    },
+    "output_contract_valid": {
+      "intervention_02": 20,
+      "intervention_04": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "delta_vs_i2": 0
+    },
+    "structured_output_valid": {
+      "intervention_02": 19.2,
+      "intervention_04": {
+        "runs": [
+          19,
+          19,
+          18,
+          18,
+          18
+        ],
+        "mean": 18.4
+      },
+      "delta_vs_i2": -0.8
+    }
+  },
+  "supporting_metrics_note": "decision 15.8 (vs I2 16), grounding 5.2 (vs 6), structured 18.4 (vs 19.2) - flat-to-slightly-down, driven by unrelated Diagnosis answer-shape variance; ARC-07/08 decision changes are the only ones passing through the changed classification. Latency ~10.9s reported as observed.",
+  "verdict": "PARTIALLY SUPPORTED, with a MATERIAL regression. The information-flow mechanism demonstrably works - reassessment now classifies the resolvability of a preserved conflict instead of leaving gap=None (0/5 None, vs 5/5 before), and ARC-08 discrimination is preserved 5/5. But the decision target is largely unmet: ARC-07 reaches ASK only 1/5 because the model usually judges its conflict requester-unresolvable, and the conflict-resolvability prompting introduces a spurious ARC-16 ASK 2/5 (0/5 under I2). Net decision is flat. Recommendation: do NOT accept I4 as-is - it trades an unreliable ARC-07 ASK (1/5) for an ARC-16 spurious ASK (2/5); the ARC-07 resolvability call is a model-judgment limit a prompt/plumbing change cannot reliably fix.",
+  "remaining_untouched_clusters": [
+    "ARC-03 telemetry catch-all",
+    "ARC-18 over-retrieval",
+    "ARC-21 evidence sufficiency"
+  ],
+  "note_artifact_baseline_field": "internal 'baseline' field is a hardcoded harness constant; identity = path + git_commit fe291c3."
+}
