@@ -1,0 +1,65 @@
+{
+  "experiment": "Controlled Intervention 7 - calibrate Diagnosis confidence to unresolved material alternatives (one _DIAGNOSIS_SYSTEM prompt section)",
+  "pre_i7_head": "1565f0ea880ede44ae4492ff18aaac9bae229fdb",
+  "auditability_sha": null,
+  "auditability_note": "No new instrumentation: mechanism_state already persists confidence, has_proposed_answer, gap_user_resolvable, decision, escalation_reason. Confidence denominators limited to runs where Diagnosis executed (confidence != None).",
+  "implementation_sha": "435ba84e756e1916daaf086b6dbed556c9393179",
+  "model": "google_genai:gemini-3.8-flash",
+  "dataset": "incidents.seed.jsonl",
+  "tier": "E2E",
+  "n_cases": 20,
+  "post_change_runs": 5,
+  "langsmith_tracing": false,
+  "infrastructure_retries": [],
+  "confidence_root_cause": "_DIAGNOSIS_SYSTEM listed confidence low/medium/high with no level definitions; the only discipline was Intervention 1 (HIGH => non-null grounded answer), coupling confidence to answer-presence rather than to unresolved competing hypotheses.",
+  "intended_semantics": "confidence = epistemic closure of the action-relevant diagnosis. HIGH = single bounded action-relevant conclusion, no material competing hypothesis that would change the recommended action (HIGH still allowed when only a routine operational/technician follow-up is needed to carry it out). MEDIUM = bounded conclusion/small differential but at least one material competing hypothesis remains needing further requester/technician evidence. LOW = weak/tentative. Orthogonal to sufficiency, technician-need, gap ownership, and answer presence.",
+  "hypothesis": "If the Diagnosis prompt defines confidence by unresolved material alternatives, ARC-09 and ARC-10 move from over-asserted HIGH toward MEDIUM where Diagnosis runs, while stable HIGH ANSWER cases stay HIGH. Falsified if a target stays reliably HIGH or the confidence mechanism does not move, or if clean ANSWER cases drift broadly to MEDIUM.",
+  "reachability_caveat": "CRITICAL: I6 (the sufficiency reclassification that had let these targets reach Diagnosis) was reverted before I7. In the accepted post-revert stack the sufficiency gate (policy rule 5) keeps the primary targets out of Diagnosis: ARC-09 Diagnosis-ran 0/5, ARC-21 0/5, ARC-10 1/5. The confidence intervention therefore had almost no test surface. Confidence is a DOWNSTREAM-of-sufficiency mechanism; it can only act once a case reaches Diagnosis.",
+  "primary_targets": {
+    "ARC-10": {
+      "diagnosis_ran": "1/5 (suff True 1/5; the other 4 runs suff False -> ESCALATE(evidence_unresolvable), Diagnosis not run)",
+      "confidence_among_ran": "HIGH 1/1 (MEDIUM 0/1)",
+      "target_metric_medium_over_ran": "0/1",
+      "final_when_ran": "ANSWER (gold ESCALATE/low_confidence)",
+      "interpretation": "Did NOT move. In the one run Diagnosis executed, confidence stayed HIGH. Pooled across all experiments where ARC-10 reached Diagnosis (I5 2 + I6 5 + I7 1 = 8), confidence is HIGH 8/8 - a stable model-judgment: the model does not classify ARC-10's efficiency-drift differential as an unresolved material alternative, so the sharpened MEDIUM definition does not engage (mirrors the ARC-03 prompt-resistant limit)."
+    },
+    "ARC-09": {
+      "diagnosis_ran": "0/5 (suff False 5/5 -> ASK via rule 5)",
+      "confidence_among_ran": "no samples",
+      "target_metric_medium_over_ran": "0/0 (not testable)",
+      "final": "ASK 5/5 (gold; via the rule-5 insufficiency path, gap_user_resolvable True 5/5) - correct, but NOT through Diagnosis confidence",
+      "interpretation": "Post-I6-revert, ARC-09 is insufficient again so Diagnosis never runs; the I7 confidence change had no surface. ARC-09's correct ASK comes from the sufficiency gate + gap, not from confidence."
+    },
+    "ARC-21": {
+      "diagnosis_ran": "0/5 (suff False 5/5 -> ESCALATE(evidence_unresolvable))",
+      "confidence_among_ran": "no samples",
+      "interpretation": "Not reachable in the accepted stack (sufficiency reverted; we did not alter sufficiency to force reachability). The MEDIUM 5/5 positive contrast seen under I6 is unavailable here."
+    }
+  },
+  "high_guards": {
+    "ARC-22": "HIGH 5/5 -> ANSWER 5/5 (rock-solid, preserved)",
+    "ARC-13": "HIGH 5/5 -> ANSWER 4/5 (1 grounding_failure, stochastic; confidence preserved HIGH)",
+    "ARC-15": "HIGH 5/5 -> ANSWER 5/5 (preserved)",
+    "ARC-14": "HIGH 5/5 -> ANSWER 4/5 (1 HIGH+null internal_error; confidence preserved HIGH)",
+    "ARC-01": "HIGH 3/5, LOW 2/5 -> the 2 LOW runs ESCALATE(low_confidence) (gold ANSWER). Minor HIGH->LOW drift (was LOW 1/5 under I5); borderline, not MEDIUM.",
+    "ARC-18": "HIGH 5/5 -> ANSWER 5/5 (technician-not-needed guard: stayed HIGH, no technician->MEDIUM coupling)"
+  },
+  "residual_high_null": {"i7_total": 4, "bycase": {"ARC-16": 3, "ARC-14": 1}, "note": "Comparable to I5 (4). ARC-16 is a known unstable case. No reduction attributable to I7 because the targeted cases mostly did not reach Diagnosis."},
+  "conservatism_scan": {"all_diagnosis_ran_confidence_totals": {"high": 39, "low": 2, "medium": 0}, "note": "MEDIUM was emitted ZERO times across all 41 Diagnosis-ran samples. No broad HIGH->MEDIUM drift (not HARMFUL); the only non-HIGH is ARC-01 LOW 2/5."},
+  "dimension_distributions": {
+    "route_correct":              {"runs": [20, 20, 20, 20, 20], "mean": 20.0, "denominator": 20},
+    "decision_correct":           {"runs": [14, 15, 16, 16, 16], "mean": 15.4, "denominator": 20, "note": "~unchanged vs I5 15.6; the confidence change did not fire on outcomes."},
+    "reason_correct":             {"runs": [7, 7, 7, 7, 7], "mean": 7.0, "denominator": 10, "note": "ARC-03/ARC-10/ARC-21 still fail reason (none reached gold low_confidence)."},
+    "retrieval_behavior_correct": {"runs": [18, 17, 18, 18, 17], "mean": 17.6, "denominator": 20},
+    "retrieval_source_correct":   {"runs": [9, 8, 9, 9, 8], "mean": 8.6, "denominator": 10},
+    "grounding_correct":          {"runs": [5, 5, 6, 6, 6], "mean": 5.6, "denominator": 7},
+    "output_contract_valid":      {"runs": [20, 20, 20, 20, 20], "mean": 20.0, "denominator": 20},
+    "structured_output_valid":    {"runs": [19, 19, 19, 19, 20], "mean": 19.2, "denominator": 20},
+    "distractor_resistance":      {"runs_clean": [18, 19, 19, 19, 19], "mean": 18.8, "denominator": 20},
+    "latency_mean_s":             {"runs": [13.49, 12.8, 11.64, 11.96, 13.3], "mean": 12.64}
+  },
+  "verdict": "FALSIFIED (on the available evidence, with a strong reachability caveat). The direct confidence mechanism did not move: MEDIUM was emitted 0 times across all 41 Diagnosis-ran samples; ARC-10 stayed HIGH in the one run it reached Diagnosis (0/1 MEDIUM); ARC-09 and ARC-21 did not reach Diagnosis at all (0 samples) because the sufficiency gate (rule 5), restored by the I6 revert, terminates them before Diagnosis. Not HARMFUL: HIGH guards preserved (ARC-22/13/15/14/18), only a minor ARC-01 LOW drift (2/5), no broad HIGH->MEDIUM conservatism. The sharpened MEDIUM definition is correct but the model does not apply it to ARC-10's implicit differential (a prompt-resistant model-judgment limit, like ARC-03).",
+  "retain_or_revert_recommendation": "REVERT I7. It did not move its mechanism (zero MEDIUM) and adds prompt complexity with no demonstrated benefit in the accepted stack. Deeper finding: confidence calibration is DOWNSTREAM of the sufficiency gate - ARC-09/ARC-10/ARC-21 cannot exercise it until the sufficiency question (the reverted I6 cluster) lets them reach Diagnosis. ARC-10 additionally shows the model will not classify an implicit differential as a material alternative from prompt wording alone. A future attempt should treat sufficiency and confidence together (sequenced or paired), not confidence alone, and may need case evidence that makes the alternative explicit (as ARC-21 had) rather than relying on model inference. No second behavioral edit made; I7 remains committed pending Ken's decision.",
+  "remaining_clusters": ["sufficiency gate (reverted I6) blocks ARC-09/ARC-10/ARC-21 from Diagnosis - the upstream dependency", "ARC-10/ARC-03 prompt-resistant model-judgment limits", "ARC-18 over-retrieval", "ARC-07 resolvability model-ceiling"],
+  "codex_prerun_review": "PASS (one confidence-calibration intervention; levels keyed on unresolved material alternatives; no conflation with sufficiency/technician/resolvability/answer-presence; I1 untouched; no decisions encoded)."
+}
