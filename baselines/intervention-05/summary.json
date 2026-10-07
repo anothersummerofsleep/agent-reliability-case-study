@@ -1,0 +1,71 @@
+{
+  "experiment": "Controlled Intervention 5 - distinguish live-telemetry acquisition from generic missing evidence (single Investigator triage-prompt change)",
+  "pre_i5_head": "51179e5cdbe36f4150285cfde0b2142a3a984443",
+  "auditability_sha": "51179e5cdbe36f4150285cfde0b2142a3a984443",
+  "implementation_sha": "183d67f89866a2f34d9d3f5df1843d36547292b8",
+  "model": "google_genai:gemini-3.8-flash",
+  "dataset": "incidents.seed.jsonl",
+  "tier": "E2E",
+  "n_cases": 20,
+  "post_change_runs": 5,
+  "langsmith_tracing": false,
+  "infrastructure_retries": [],
+  "accepted_stack_before_i5": [
+    "Intervention 1 (Diagnosis confidence/answer coupling)",
+    "Intervention 2 (monotonic Investigator conflict preservation)",
+    "evaluator mechanism_state auditability (now incl. observed triage choices, 51179e5)"
+  ],
+  "arc03_root_cause": "The triage model set needs_live_telemetry=True as a generic 'I need more information' signal. Because telemetry was selected, the no-backend telemetry path ran, tool_failed=True, retrieval never occurred, and the policy produced ESCALATE(tool_failure): the broad decision was accidentally ESCALATE while the evidence path and the escalation reason were both wrong.",
+  "hypothesis": "If the triage prompt explicitly distinguishes genuine live-telemetry acquisition from generic missing information, document retrieval, and technician-only field inspection, then ARC-03 will stop requesting live telemetry, perform the required Northwind retrieval, and reach ESCALATE(evidence_unresolvable), while ARC-06 keeps requesting telemetry and reaching ESCALATE(tool_failure).",
+  "intervention": "_TRIAGE_SYSTEM only: needs_live_telemetry set true only when the next step specifically requires obtaining a current machine reading/measurement/status/telemetry value through the live telemetry tool; not a generic uncertainty flag; prefer needs_retrieval when the manual/history corpus is the better source; do not request telemetry when the remaining uncertainty ultimately needs a technician/expert/physical-or-field inspection/unavailable reference instrument; the two flags name the evidence source required next, not the amount of uncertainty. Semantic and general: no ARC references, no fault-type rule, no document IDs, no gold labels, no retrieval-over-telemetry priority.",
+  "arc03_target_result": {
+    "triage_needs_live_telemetry": "False 5/5 (was telemetry 5/5 pre-I5)",
+    "triage_needs_retrieval": "True 5/5",
+    "retrieval_ran": "5/5",
+    "DOC-COMMS-A31_retrieved": "5/5 (plus one non-distractor second hit: DOC-RTU-A11 x4, DOC-FILT-A41 x1)",
+    "tool_failed": "False 5/5 (telemetry tool_failure eliminated)",
+    "evidence_sufficient": "True 5/5",
+    "gap_user_resolvable": "None 5/5",
+    "final_decision": "ANSWER 5/5 (gold ESCALATE)",
+    "reason": "None 5/5 (gold evidence_unresolvable)",
+    "interpretation": "The telemetry misclassification is completely and stably fixed: ARC-03 no longer requests telemetry, retrieves DOC-COMMS-A31, and does not hit tool_failure. But the full gold path is not reached: a separate downstream state, the Investigator judging the retrieved manual evidence sufficient (evidence_sufficient=True), drives Diagnosis to answer, so the decision is ANSWER rather than ESCALATE(evidence_unresolvable). This is the evidence-sufficiency cluster (ARC-21), explicitly out of scope for I5."
+  },
+  "arc06_contrast_result": {
+    "triage_needs_live_telemetry": "True 5/5",
+    "telemetry_tool_invoked": "yes 5/5",
+    "tool_failed": "True 5/5",
+    "final_decision": "ESCALATE 5/5",
+    "reason": "tool_failure 5/5",
+    "interpretation": "Contrast preserved: the deliberate telemetry-tool-failure case still requests telemetry and escalates on tool_failure. The intervention did NOT globally suppress telemetry."
+  },
+  "telemetry_regression_surface": {
+    "cases_requesting_telemetry_under_i5": {
+      "ARC-02": "True 5/5 -> tool_failure 5/5 (gold ASK; pre-existing non-target miss; ARC-02 telemetry behavior is historically variable; NOT newly suppressed by I5 and NOT the target)",
+      "ARC-06": "True 5/5 -> tool_failure 5/5 (gold contrast; correct and preserved)"
+    },
+    "telemetry_removed": "ARC-03 only: telemetry 5/5 (pre-I5) -> 0/5 (now retrieves). This is the intended effect.",
+    "legitimate_telemetry_suppressed": "none (ARC-06 intact 5/5)",
+    "new_tool_failure_introduced": "none (only ARC-02/ARC-06 tool-fail, both pre-existing telemetry cases)",
+    "retrieval_replaced_by_telemetry": "none",
+    "telemetry_replaced_by_retrieval": "ARC-03 only (intended)",
+    "arc08_note": "ARC-08 fails retrieval-behavior/source under I5 (no_retrieval vs gold 'required'), but this is PRE-EXISTING in the accepted stack: I2 ran no_retrieval 5/5 with ESCALATE(conflict_unresolvable) 5/5. ARC-08 decision+reason remain correct 5/5 under I5. Not an I5 regression; it only looks new relative to Baseline v1 (which retrieved).",
+    "arc18_note": "ARC-18 over-retrieval remains failing (known cluster, out of scope)."
+  },
+  "dimension_distributions": {
+    "route_correct":              {"runs": [20, 20, 20, 20, 20], "mean": 20.0, "denominator": 20},
+    "decision_correct":           {"runs": [16, 15, 14, 16, 17], "mean": 15.6, "denominator": 20, "note": "pre-I5 accepted (I2) decision mean 16.0; ARC-03 decision flips from accidentally-correct ESCALATE(tool_failure) to ANSWER, so ARC-03 decision_correct goes pass->fail; net flat-to-slightly-down, within run-to-run spread."},
+    "reason_correct":             {"runs": [7, 7, 7, 7, 7], "mean": 7.0, "denominator": 10},
+    "retrieval_behavior_correct": {"runs": [18, 18, 17, 18, 18], "mean": 17.8, "denominator": 20},
+    "retrieval_source_correct":   {"runs": [9, 9, 8, 9, 9], "mean": 8.8, "denominator": 10},
+    "grounding_correct":          {"runs": [6, 5, 4, 6, 7], "mean": 5.6, "denominator": 7},
+    "output_contract_valid":      {"runs": [20, 20, 20, 20, 20], "mean": 20.0, "denominator": 20},
+    "structured_output_valid":    {"runs": [20, 18, 19, 19, 20], "mean": 19.2, "denominator": 20},
+    "distractor_resistance":      {"runs_clean": [18, 19, 19, 19, 18], "mean": 18.6, "denominator": 20},
+    "latency_mean_s":             {"runs": [10.26, 10.29, 10.06, 10.5, 11.15], "mean": 10.45}
+  },
+  "dimension_note": "Movements off ARC-03/06 (grounding 4-7, structured 18-20, a one-off ARC-01/ARC-14 miss) are unrelated Diagnosis/grounding stochasticity, not attributable to the triage-prompt change; reported descriptively, no composite score, no significance claim (n=5).",
+  "verdict": "PARTIALLY SUPPORTED. The telemetry classification is fixed exactly as hypothesized and with unusual stability: ARC-03 needs_live_telemetry=False 5/5 (was telemetry 5/5), retrieves DOC-COMMS-A31 5/5, tool_failed eliminated 5/5; ARC-06 preserved 5/5 (telemetry + tool_failure); no legitimate telemetry path suppressed and no new tool_failure introduced. BUT the ARC-03 decision/reason target is not met: evidence_sufficient=True 5/5 drives ANSWER 5/5 instead of ESCALATE(evidence_unresolvable). The remaining miss is the separate, out-of-scope evidence-sufficiency cluster (ARC-21), not a telemetry problem. Not HARMFUL (ARC-06 intact, no material regressions).",
+  "retain_or_revert_recommendation": "RETAIN as a correctness fix, with an explicit caveat and deferring to Ken. Rationale: the change corrects a genuine evidence-path bug (telemetry was being used as a generic uncertainty flag), the evidence path is now correct and well-motivated, ARC-06 is preserved, and there are no harmful regressions, mirroring the reasoning by which Intervention 2 was retained despite a flat decision score. Caveat to weigh: unlike I2, I5 flips ARC-03's headline decision from accidentally-correct ESCALATE(tool_failure) to ANSWER (wrong), so decision_correct on ARC-03 regresses pass->fail and the overall decision mean is flat-to-slightly-down (15.6 vs 16.0). The full ARC-03 gold path requires separately fixing the downstream evidence-sufficiency misjudgment (ARC-21 cluster). No second behavioral change made; retain/revert is Ken's call.",
+  "remaining_untouched_clusters": ["ARC-18 over-retrieval", "ARC-21 evidence sufficiency (now the ARC-03 blocker)", "ARC-07 resolvability ceiling", "ARC-02 telemetry/ASK variability"],
+  "codex_prerun_review": "PASS (one triage-prompt intervention narrowing needs_live_telemetry; no global telemetry suppression; nothing else in the behavioral path changed)."
+}

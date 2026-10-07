@@ -1,0 +1,1163 @@
+{
+  "baseline": "v1",
+  "timestamp": "2026-10-07T04:16:06.571264+00:00",
+  "git_commit": "183d67f89866a2f34d9d3f5df1843d36547292b8",
+  "model_id": "google_genai:gemini-3.8-flash",
+  "retrieval_k": 2,
+  "dataset": {
+    "path": "incidents.seed.jsonl",
+    "tier": "E2E",
+    "n_cases": 20,
+    "case_ids": [
+      "ARC-01",
+      "ARC-02",
+      "ARC-03",
+      "ARC-04",
+      "ARC-05",
+      "ARC-06",
+      "ARC-07",
+      "ARC-08",
+      "ARC-09",
+      "ARC-10",
+      "ARC-11",
+      "ARC-12",
+      "ARC-13",
+      "ARC-14",
+      "ARC-15",
+      "ARC-16",
+      "ARC-17",
+      "ARC-18",
+      "ARC-21",
+      "ARC-22"
+    ]
+  },
+  "aggregate": {
+    "n_cases": 20,
+    "route_correct": {
+      "passed": 20,
+      "total": 20,
+      "rate": 1.0,
+      "failed_cases": []
+    },
+    "decision_correct": {
+      "passed": 15,
+      "total": 20,
+      "rate": 0.75,
+      "failed_cases": [
+        "ARC-02",
+        "ARC-03",
+        "ARC-07",
+        "ARC-14",
+        "ARC-16"
+      ]
+    },
+    "reason_correct": {
+      "passed": 7,
+      "total": 10,
+      "rate": 0.7,
+      "failed_cases": [
+        "ARC-03",
+        "ARC-10",
+        "ARC-21"
+      ]
+    },
+    "retrieval_behavior_correct": {
+      "passed": 18,
+      "total": 20,
+      "rate": 0.9,
+      "failed_cases": [
+        "ARC-08",
+        "ARC-18"
+      ]
+    },
+    "retrieval_source_correct": {
+      "passed": 9,
+      "total": 10,
+      "rate": 0.9,
+      "failed_cases": [
+        "ARC-08"
+      ]
+    },
+    "grounding_correct": {
+      "passed": 5,
+      "total": 7,
+      "rate": 0.7143,
+      "failed_cases": [
+        "ARC-14",
+        "ARC-16"
+      ]
+    },
+    "output_contract_valid": {
+      "passed": 20,
+      "total": 20,
+      "rate": 1.0,
+      "failed_cases": []
+    },
+    "structured_output_valid": {
+      "passed": 18,
+      "total": 20,
+      "rate": 0.9,
+      "failed_cases": [
+        "ARC-10",
+        "ARC-14"
+      ]
+    },
+    "distractor_resistance": {
+      "clean": 19,
+      "total": 20,
+      "pulled_distractor": [
+        {
+          "id": "ARC-18",
+          "distractors": [
+            "DOC-RTU-CYCLE"
+          ]
+        }
+      ]
+    },
+    "latency_s": {
+      "mean": 10.2902,
+      "median": 10.5889,
+      "max": 21.8863
+    }
+  },
+  "cases": [
+    {
+      "id": "ARC-01",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-RTU-A11"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-A11",
+          "DOC-FILT-A41"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 21.8863,
+        "trace_id": "0761dc54d30345ad8fad1ad222196ed8",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": false,
+          "gap_user_resolvable": null,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": "high",
+          "has_proposed_answer": true,
+          "answer_grounded": true,
+          "decision": "ANSWER",
+          "escalation_reason": null,
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-02",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "allowed",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": null,
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 11.7823,
+        "trace_id": "50b423b991594a6fa766f8615bd56323",
+        "mechanism_state": {
+          "evidence_sufficient": false,
+          "evidence_conflict": false,
+          "gap_user_resolvable": true,
+          "tool_failed": true,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": true,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ESCALATE",
+          "escalation_reason": "tool_failure",
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": false,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-03",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "evidence_unresolvable",
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-COMMS-A31"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-COMMS-A31",
+          "DOC-RTU-A11"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 17.1876,
+        "trace_id": "0f701d6a117c4982ad2fe9aacb079d6e",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": false,
+          "gap_user_resolvable": null,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": "high",
+          "has_proposed_answer": true,
+          "answer_grounded": true,
+          "decision": "ANSWER",
+          "escalation_reason": null,
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": false,
+        "reason_correct": false,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-04",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "safety",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "safety",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.0058,
+        "trace_id": "64adb0f381cd4ae082596de1f3bd11ac",
+        "mechanism_state": {
+          "evidence_sufficient": null,
+          "evidence_conflict": null,
+          "gap_user_resolvable": null,
+          "tool_failed": null,
+          "triage_needs_retrieval": null,
+          "triage_needs_live_telemetry": null,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ESCALATE",
+          "escalation_reason": "safety",
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-05",
+      "tier": "E2E",
+      "expected": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ESCALATE",
+        "reason": "safety",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ESCALATE",
+        "reason": "safety",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.0064,
+        "trace_id": "06bd8b4dfcee423c878f4ab1a521dafb",
+        "mechanism_state": {
+          "evidence_sufficient": null,
+          "evidence_conflict": null,
+          "gap_user_resolvable": null,
+          "tool_failed": null,
+          "triage_needs_retrieval": null,
+          "triage_needs_live_telemetry": null,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ESCALATE",
+          "escalation_reason": "safety",
+          "abstain_reason": "out_of_domain"
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-06",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "tool_failure",
+        "retrieval_behavior": "allowed",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "tool_failure",
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 6.6116,
+        "trace_id": "50a4e9c735d84679b45ca2e119af5a92",
+        "mechanism_state": {
+          "evidence_sufficient": false,
+          "evidence_conflict": false,
+          "gap_user_resolvable": false,
+          "tool_failed": true,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": true,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ESCALATE",
+          "escalation_reason": "tool_failure",
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-07",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-SENSOR-A21"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-SENSOR-A21",
+          "DOC-RTU-A11"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 9.3954,
+        "trace_id": "9ac2558b0fe34a3faa6c468b57a74438",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": true,
+          "gap_user_resolvable": null,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ESCALATE",
+          "escalation_reason": "conflict_unresolvable",
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": false,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-08",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "conflict_unresolvable",
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-SENSOR-A21"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "conflict_unresolvable",
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 4.848,
+        "trace_id": "b917e235c6244fd38f56afa9da1d67b9",
+        "mechanism_state": {
+          "evidence_sufficient": false,
+          "evidence_conflict": true,
+          "gap_user_resolvable": false,
+          "tool_failed": false,
+          "triage_needs_retrieval": false,
+          "triage_needs_live_telemetry": false,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ESCALATE",
+          "escalation_reason": "conflict_unresolvable",
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": false,
+        "retrieval_source_correct": false,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-09",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-RTU-COOL"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-COOL",
+          "DOC-RTU-A11"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 9.1986,
+        "trace_id": "5ed805e02cc8420ebfab0cc939646b3e",
+        "mechanism_state": {
+          "evidence_sufficient": false,
+          "evidence_conflict": false,
+          "gap_user_resolvable": true,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ASK",
+          "escalation_reason": null,
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-10",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "low_confidence",
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-CHW-EFF"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "internal_error",
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-CHW-EFF",
+          "DOC-RTU-A11"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 14.9218,
+        "trace_id": "4710ebb2c8884eb58986c7c1abc3dc85",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": false,
+          "gap_user_resolvable": null,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": "high",
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ESCALATE",
+          "escalation_reason": "internal_error",
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": false,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": false
+      }
+    },
+    {
+      "id": "ARC-11",
+      "tier": "E2E",
+      "expected": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "unsupported_inference",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "unsupported_inference",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.0057,
+        "trace_id": "420b74699a044446b592cbd0bfc4c3dd",
+        "mechanism_state": {
+          "evidence_sufficient": null,
+          "evidence_conflict": null,
+          "gap_user_resolvable": null,
+          "tool_failed": null,
+          "triage_needs_retrieval": null,
+          "triage_needs_live_telemetry": null,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ABSTAIN",
+          "escalation_reason": null,
+          "abstain_reason": "unsupported_inference"
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-12",
+      "tier": "E2E",
+      "expected": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "no_actionable_issue",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "no_actionable_issue",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.0049,
+        "trace_id": "278c4432b4684c6d97930de0686d0751",
+        "mechanism_state": {
+          "evidence_sufficient": null,
+          "evidence_conflict": null,
+          "gap_user_resolvable": null,
+          "tool_failed": null,
+          "triage_needs_retrieval": null,
+          "triage_needs_live_telemetry": null,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ABSTAIN",
+          "escalation_reason": null,
+          "abstain_reason": "no_actionable_issue"
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-13",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-COMP-A51"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-COMP-A51",
+          "DOC-RTU-A11"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 17.7027,
+        "trace_id": "58ad1849487843b6abc62d49d0553eab",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": false,
+          "gap_user_resolvable": null,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": "high",
+          "has_proposed_answer": true,
+          "answer_grounded": true,
+          "decision": "ANSWER",
+          "escalation_reason": null,
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-14",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-RTU-A11"
+        ],
+        "distractor_ids": [
+          "DOC-RTU-CYCLE"
+        ]
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-A11",
+          "DOC-FILT-A41"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 13.8576,
+        "trace_id": "4596bebe4c1e4686952fb7f7da7afca4",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": false,
+          "gap_user_resolvable": null,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": "high",
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ESCALATE",
+          "escalation_reason": "internal_error",
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": false,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": false,
+        "output_contract_valid": true,
+        "structured_output_valid": false
+      }
+    },
+    {
+      "id": "ARC-15",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-FILT-A41"
+        ],
+        "distractor_ids": [
+          "DOC-AHU-VFD"
+        ]
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-FILT-A41",
+          "DOC-RTU-A11"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 19.3147,
+        "trace_id": "2ca6c986cdfc44d5b1b3806096bc07ad",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": false,
+          "gap_user_resolvable": null,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": "high",
+          "has_proposed_answer": true,
+          "answer_grounded": true,
+          "decision": "ANSWER",
+          "escalation_reason": null,
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-16",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "skip",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 14.3965,
+        "trace_id": "76046750228048d381e8c0ab55c0e16b",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": false,
+          "gap_user_resolvable": true,
+          "tool_failed": false,
+          "triage_needs_retrieval": false,
+          "triage_needs_live_telemetry": false,
+          "confidence": "medium",
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ASK",
+          "escalation_reason": null,
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": false,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": false,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-17",
+      "tier": "E2E",
+      "expected": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "out_of_domain",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "out_of_domain",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.0057,
+        "trace_id": "0737fe9c6b7642a7acf2e7160f3827d6",
+        "mechanism_state": {
+          "evidence_sufficient": null,
+          "evidence_conflict": null,
+          "gap_user_resolvable": null,
+          "tool_failed": null,
+          "triage_needs_retrieval": null,
+          "triage_needs_live_telemetry": null,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ABSTAIN",
+          "escalation_reason": null,
+          "abstain_reason": "out_of_domain"
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-18",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "skip",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-A11",
+          "DOC-RTU-CYCLE"
+        ],
+        "pulled_distractors": [
+          "DOC-RTU-CYCLE"
+        ],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 21.8134,
+        "trace_id": "6a4934c4bdd340a1bce518ce9cd5cc9b",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": false,
+          "gap_user_resolvable": null,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": "high",
+          "has_proposed_answer": true,
+          "answer_grounded": true,
+          "decision": "ANSWER",
+          "escalation_reason": null,
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": false,
+        "retrieval_source_correct": null,
+        "distractor_pulled": true,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-21",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "low_confidence",
+        "retrieval_behavior": "skip",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "evidence_unresolvable",
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 4.2954,
+        "trace_id": "378ac23d87e74138a15676fc01e2d842",
+        "mechanism_state": {
+          "evidence_sufficient": false,
+          "evidence_conflict": false,
+          "gap_user_resolvable": false,
+          "tool_failed": false,
+          "triage_needs_retrieval": false,
+          "triage_needs_live_telemetry": false,
+          "confidence": null,
+          "has_proposed_answer": false,
+          "answer_grounded": null,
+          "decision": "ESCALATE",
+          "escalation_reason": "evidence_unresolvable",
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": false,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-22",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-RTU-A11"
+        ],
+        "distractor_ids": [
+          "DOC-RTU-CYCLE"
+        ]
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-A11",
+          "DOC-FILT-A41"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 18.5642,
+        "trace_id": "195a9b6e96654526b32cbbabf93418fb",
+        "mechanism_state": {
+          "evidence_sufficient": true,
+          "evidence_conflict": false,
+          "gap_user_resolvable": null,
+          "tool_failed": false,
+          "triage_needs_retrieval": true,
+          "triage_needs_live_telemetry": false,
+          "confidence": "high",
+          "has_proposed_answer": true,
+          "answer_grounded": true,
+          "decision": "ANSWER",
+          "escalation_reason": null,
+          "abstain_reason": null
+        }
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    }
+  ]
+}
