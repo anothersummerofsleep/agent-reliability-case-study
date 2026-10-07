@@ -1,0 +1,68 @@
+{
+  "experiment": "Controlled Intervention 6 - define policy-actionable evidence sufficiency (one semantic invariant, two prompt locations: triage supplied_sufficient + assess evidence_sufficient)",
+  "pre_i6_head": "023f330a0649d6a8f60e6dcdfe16ed94b6e8b98a",
+  "auditability_sha": null,
+  "auditability_note": "No new instrumentation needed: mechanism_state already persists evidence_sufficient, gap, confidence, has_proposed_answer, answer_grounded, decision/escalation_reason, plus triage_needs_retrieval/telemetry. Both primary edges (ARC-03 assess suff, ARC-21 triage supplied_sufficient on the skip branch distinguishable via triage_needs_retrieval=False) are fully provable from persisted state.",
+  "implementation_sha": "985e0c68881417d33dd6f544459d2810060967f2",
+  "model": "google_genai:gemini-3.8-flash",
+  "dataset": "incidents.seed.jsonl",
+  "tier": "E2E",
+  "n_cases": 20,
+  "post_change_runs": 5,
+  "langsmith_tracing": false,
+  "infrastructure_retries": [],
+  "semantic_invariant": "evidence_sufficient / supplied_sufficient = the evidence already supports a bounded, policy-actionable diagnostic conclusion or a small evidence-supported differential the Diagnosis step can reason over at an appropriate confidence level; NOT the elimination of uncertainty, a uniquely proven root cause, or the absence of future technician work. A document merely being relevant does not by itself make evidence sufficient. Applied identically to triage supplied_sufficient and assess evidence_sufficient.",
+  "hypothesis": "If both Investigator sufficiency judgments define sufficiency as bounded-policy-actionable rather than definitive-root-cause, then ARC-03 becomes insufficient (stops before Diagnosis -> evidence_unresolvable) and ARC-21 becomes sufficient (reaches Diagnosis), while already-correct contrast cases keep their sufficiency behavior. Directly falsified if either primary edge does not move reliably.",
+  "primary_edges": {
+    "ARC-21": {
+      "suff_before_i5i2": "False 5/5",
+      "suff_after_i6": "True 5/5",
+      "moved": true,
+      "diagnosis_reachable": "yes 5/5 (confidence=medium 5/5)",
+      "gap": "None 5/5",
+      "final": "ESCALATE(low_confidence) 5/5 == GOLD (decision AND reason)",
+      "interpretation": "Full success. The incident-provided bounded differential is now judged sufficient, Diagnosis runs at medium confidence, and the policy produces the gold low_confidence escalation. Previously accidentally-correct (evidence_unresolvable); now genuinely correct."
+    },
+    "ARC-03": {
+      "suff_before_i6_under_i5": "True 5/5",
+      "suff_after_i6": "True 5/5",
+      "moved": false,
+      "final": "ANSWER 4/5, ESCALATE(grounding_failure) 1/5 (gold ESCALATE/evidence_unresolvable)",
+      "i5_intact": "yes - telemetry False 5/5, retrieval True 5/5, DOC-COMMS-A31 retrieved 5/5, tool_failed False 5/5",
+      "interpretation": "Edge did NOT move. The assess step still judges the retrieved DOC-COMMS-A31 (which only prescribes field-bus inspection) as a sufficient bounded conclusion despite the sharpened wording. The 'relevant document is not by itself sufficient' instruction did not change the model's judgment here. This directly falsifies the ARC-03 half of the hypothesis."
+    }
+  },
+  "arc10_observational": {
+    "suff_before_i5": "False 3/5, True 2/5 (unstable)",
+    "suff_after_i6": "True 5/5 (stabilized)",
+    "decision_after_i6": "ANSWER 3/5, ESCALATE(internal_error) 2/5 (gold low_confidence; still not reached)",
+    "interpretation": "Sufficiency stabilized to True (the bounded differential is now consistently recognized), which is the intended direction. But Diagnosis returns HIGH confidence (not the gold MEDIUM), so it answers or trips the rule-7 guard instead of reaching low_confidence. The residual miss is the separate Diagnosis confidence-calibration cluster, out of scope for I6."
+  },
+  "regression_surface": {
+    "ARC-09": {
+      "before_i5": "evidence_sufficient False 5/5 + gap True 5/5 -> ASK 5/5 (correct, via rule 5)",
+      "after_i6": "evidence_sufficient True 5/5 -> reaches Diagnosis -> confidence HIGH + no proposed answer 4/5 -> rule-7 guard -> ESCALATE(internal_error) 4/5; ASK 1/5 (run4: confidence medium + gap True)",
+      "status": "REGRESSION (decision ASK->ESCALATE 4/5). Mechanistically: the sufficiency reclassification (a bounded differential -> sufficient, defensible) pushes ARC-09 past rule 5 into Diagnosis, where the SEPARATE confidence-overreach/contract issue (HIGH confidence with no answer) then produces internal_error. Overlaps the ARC-10 confidence-calibration cluster; previously masked because rule 5 caught ARC-09 earlier."
+    },
+    "ARC-18": {"suff": "True 5/5 (preserved as required)", "decision": "ANSWER 4/5, ESCALATE 1/5", "status": "sufficiency preserved; over-retrieval unchanged (out of scope)"},
+    "ARC-06": {"telemetry": "True 5/5", "final": "ESCALATE(tool_failure) 5/5", "status": "preserved"},
+    "ARC-08": {"final": "ESCALATE(conflict_unresolvable) 5/5", "status": "preserved (conflict path unchanged)"},
+    "answer_gold_cases": "All ANSWER-gold cases (ARC-01/11/13/14/15/16/18/22) kept evidence_sufficient True 5/5 - NO new insufficiency-driven failures. ARC-01/13/14/15/16 show ANSWER/ESCALATE splits from stochastic grounding, not from sufficiency; ARC-22 ANSWER 5/5."
+  },
+  "dimension_distributions": {
+    "route_correct":              {"runs": [20, 20, 20, 20, 20], "mean": 20.0, "denominator": 20},
+    "decision_correct":           {"runs": [12, 15, 13, 15, 13], "mean": 13.6, "denominator": 20, "note": "vs I5 mean 15.6. Drop driven by the ARC-09 regression plus increased downstream Diagnosis/grounding exposure (more cases now judged sufficient reach Diagnosis->Grounding, where stochastic grounding failures occur). Latency also elevated this session (~14s vs ~10s), possible provider variance."},
+    "reason_correct":             {"runs": [8, 8, 8, 8, 8], "mean": 8.0, "denominator": 10, "note": "vs I5 mean 7.0: ARC-21 reason now correct (low_confidence); remaining fails ARC-03, ARC-10."},
+    "retrieval_behavior_correct": {"runs": [19, 19, 19, 18, 19], "mean": 18.8, "denominator": 20},
+    "retrieval_source_correct":   {"runs": [10, 10, 10, 9, 10], "mean": 9.8, "denominator": 10},
+    "grounding_correct":          {"runs": [3, 6, 5, 6, 4], "mean": 4.8, "denominator": 7},
+    "output_contract_valid":      {"runs": [20, 20, 20, 20, 20], "mean": 20.0, "denominator": 20},
+    "structured_output_valid":    {"runs": [15, 17, 17, 19, 15], "mean": 16.6, "denominator": 20},
+    "distractor_resistance":      {"runs_clean": [17, 18, 19, 19, 19], "mean": 18.4, "denominator": 20},
+    "latency_mean_s":             {"runs": [13.31, 14.75, 13.68, 14.13, 13.69], "mean": 13.91}
+  },
+  "verdict": "PARTIALLY SUPPORTED. One primary edge moved reliably and the other did not, and a meaningful regression appeared: ARC-21 flipped False->True 5/5 and reached the FULL gold path ESCALATE(low_confidence) 5/5; but ARC-03 did NOT move (assess still judges the retrieved comms manual sufficient 5/5 -> ANSWER), falsifying that half; and ARC-09 regressed from ASK 5/5 to ESCALATE(internal_error) 4/5. ARC-10 sufficiency stabilized to True (observational, still misses gold on confidence). Contrast cases ARC-06/ARC-08/ARC-18 and all ANSWER-gold cases preserved their sufficiency. Not HARMFUL (regression is a single previously-correct case, not broad destabilization).",
+  "retain_or_revert_recommendation": "LEAN REVERT / do not accept I6 as active behavior as-is, Ken to arbitrate. Reasons: (1) it failed its co-primary ARC-03 edge (no movement, 5/5); (2) it regressed a previously-correct case, ARC-09 (ASK->internal_error 4/5); (3) decision mean dropped 15.6 -> 13.6 with no net decision gain. This matches the project's documented principle (and the I4 precedent) that a partial mechanism win which breaks a previously-correct case should not be kept. HOWEVER the finding is valuable: the sufficiency reclassification is defensible (ARC-21 fully fixed, ARC-10 sufficiency stabilized), and it cleanly EXPOSED that ARC-09/ARC-10's residual failures are the separate downstream Diagnosis confidence-calibration cluster (HIGH confidence where gold wants MEDIUM, and HIGH-confidence-with-no-answer). A better-scoped future intervention would likely pair this sufficiency definition with a Diagnosis confidence-calibration fix. No second behavioral edit made; I6 remains committed and active pending Ken's decision.",
+  "remaining_separate_clusters": ["Diagnosis confidence-calibration (HIGH vs MEDIUM; HIGH-with-no-answer rule-7 trips) - now the ARC-09/ARC-10 blocker and newly salient", "ARC-03 assess sufficiency judgment on inspection-only manuals (did not respond to prompt sharpening; may be a model-judgment limit)", "ARC-18 over-retrieval", "ARC-07 resolvability model-ceiling"],
+  "codex_prerun_review": "PASS (one semantic intervention, same definition in both sufficiency judgments; no invalid shortcuts; nothing else in the behavioral path changed)."
+}
