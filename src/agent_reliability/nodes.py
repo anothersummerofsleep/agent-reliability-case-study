@@ -263,14 +263,7 @@ _ASSESS_SYSTEM = (
     "contradiction in the readings), gap_user_resolvable (true if a missing detail the requester "
     "could supply would resolve it, false if it needs a technician/inspection, null if nothing is "
     "missing), and needs_more_retrieval (true only if one more lookup with a refined more_query is "
-    "clearly warranted). Reason only from the provided evidence. "
-    "When the readings genuinely conflict, you MUST classify gap_user_resolvable rather than "
-    "leaving it null: set it true if the requester can plausibly resolve the conflict by providing, "
-    "repeating, or confirming a discriminating observation available to them (for example re-taking "
-    "or re-confirming a reading from an instrument they can access); set it false if resolving the "
-    "conflict requires a technician, an expert, a physical inspection, or a reference instrument the "
-    "requester does not have. Do not leave gap_user_resolvable null when a genuine unresolved "
-    "conflict exists."
+    "clearly warranted). Reason only from the provided evidence."
 )
 
 
