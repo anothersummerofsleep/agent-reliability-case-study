@@ -1,0 +1,884 @@
+{
+  "baseline": "v1",
+  "timestamp": "2026-10-07T01:19:19.573304+00:00",
+  "git_commit": "247441ef803d932687c81a3327d6b410f6999aa6",
+  "model_id": "google_genai:gemini-3.8-flash",
+  "retrieval_k": 2,
+  "dataset": {
+    "path": "incidents.seed.jsonl",
+    "tier": "E2E",
+    "n_cases": 20,
+    "case_ids": [
+      "ARC-01",
+      "ARC-02",
+      "ARC-03",
+      "ARC-04",
+      "ARC-05",
+      "ARC-06",
+      "ARC-07",
+      "ARC-08",
+      "ARC-09",
+      "ARC-10",
+      "ARC-11",
+      "ARC-12",
+      "ARC-13",
+      "ARC-14",
+      "ARC-15",
+      "ARC-16",
+      "ARC-17",
+      "ARC-18",
+      "ARC-21",
+      "ARC-22"
+    ]
+  },
+  "aggregate": {
+    "n_cases": 20,
+    "route_correct": {
+      "passed": 20,
+      "total": 20,
+      "rate": 1.0,
+      "failed_cases": []
+    },
+    "decision_correct": {
+      "passed": 16,
+      "total": 20,
+      "rate": 0.8,
+      "failed_cases": [
+        "ARC-02",
+        "ARC-07",
+        "ARC-10",
+        "ARC-16"
+      ]
+    },
+    "reason_correct": {
+      "passed": 7,
+      "total": 10,
+      "rate": 0.7,
+      "failed_cases": [
+        "ARC-03",
+        "ARC-10",
+        "ARC-21"
+      ]
+    },
+    "retrieval_behavior_correct": {
+      "passed": 17,
+      "total": 20,
+      "rate": 0.85,
+      "failed_cases": [
+        "ARC-03",
+        "ARC-08",
+        "ARC-18"
+      ]
+    },
+    "retrieval_source_correct": {
+      "passed": 8,
+      "total": 10,
+      "rate": 0.8,
+      "failed_cases": [
+        "ARC-03",
+        "ARC-08"
+      ]
+    },
+    "grounding_correct": {
+      "passed": 6,
+      "total": 7,
+      "rate": 0.8571,
+      "failed_cases": [
+        "ARC-16"
+      ]
+    },
+    "output_contract_valid": {
+      "passed": 20,
+      "total": 20,
+      "rate": 1.0,
+      "failed_cases": []
+    },
+    "structured_output_valid": {
+      "passed": 20,
+      "total": 20,
+      "rate": 1.0,
+      "failed_cases": []
+    },
+    "distractor_resistance": {
+      "clean": 18,
+      "total": 20,
+      "pulled_distractor": [
+        {
+          "id": "ARC-09",
+          "distractors": [
+            "DOC-RTU-CYCLE"
+          ]
+        },
+        {
+          "id": "ARC-18",
+          "distractors": [
+            "DOC-RTU-CYCLE"
+          ]
+        }
+      ]
+    },
+    "latency_s": {
+      "mean": 9.7933,
+      "median": 7.9257,
+      "max": 21.9403
+    }
+  },
+  "cases": [
+    {
+      "id": "ARC-01",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-RTU-A11"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-A11",
+          "DOC-SENSOR-A21"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 21.9403,
+        "trace_id": "7b1b2cfdebad478aaa0f3c41b6af47d5"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-02",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "allowed",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": null,
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 4.6769,
+        "trace_id": "bd6d0f334592425393c8267656961aa5"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": false,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-03",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "evidence_unresolvable",
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-COMMS-A31"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "tool_failure",
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 5.6203,
+        "trace_id": "9c13a2ebc4374e84ab7a89b5df016afa"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": false,
+        "retrieval_behavior_correct": false,
+        "retrieval_source_correct": false,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-04",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "safety",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "safety",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.007,
+        "trace_id": "9883ec78ec2b426ba78d22633e423a1c"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-05",
+      "tier": "E2E",
+      "expected": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ESCALATE",
+        "reason": "safety",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ESCALATE",
+        "reason": "safety",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.0049,
+        "trace_id": "5fc5dc5289f64bf5ad9668f343aa00cd"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-06",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "tool_failure",
+        "retrieval_behavior": "allowed",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "tool_failure",
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 4.9317,
+        "trace_id": "691c86e0db524f6a85ca64b17e28e2a8"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-07",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-SENSOR-A21"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-SENSOR-A21",
+          "DOC-RTU-A11"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 10.4017,
+        "trace_id": "d9f52cf8e7e44bc1b464997c629f3ac7"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": false,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-08",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "conflict_unresolvable",
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-SENSOR-A21"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "conflict_unresolvable",
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 4.6259,
+        "trace_id": "2491b71ad64b48a1a68d508dab16555d"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": false,
+        "retrieval_source_correct": false,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-09",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-RTU-COOL"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-COOL",
+          "DOC-RTU-CYCLE"
+        ],
+        "pulled_distractors": [
+          "DOC-RTU-CYCLE"
+        ],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 10.231,
+        "trace_id": "d112dbc29deb406992148bf6a3f1d502"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": true,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-10",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "low_confidence",
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-CHW-EFF"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-CHW-EFF"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 21.3799,
+        "trace_id": "5a9b0c63cccf45858ac1a697199a57b1"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": false,
+        "reason_correct": false,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-11",
+      "tier": "E2E",
+      "expected": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "unsupported_inference",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "unsupported_inference",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.0061,
+        "trace_id": "d0726b418f56485d84f127712af7b88b"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-12",
+      "tier": "E2E",
+      "expected": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "no_actionable_issue",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "no_actionable_issue",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.0051,
+        "trace_id": "207eb66cdd374813adc17a27b39580d3"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-13",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-COMP-A51"
+        ],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-COMP-A51",
+          "DOC-SENSOR-A21"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 14.9608,
+        "trace_id": "49378ebb782e4b2089cd1ac10853f18d"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-14",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-RTU-A11"
+        ],
+        "distractor_ids": [
+          "DOC-RTU-CYCLE"
+        ]
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-A11",
+          "DOC-FILT-A41"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 18.3464,
+        "trace_id": "2b4d54bd09024743b79adbcd15d16113"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-15",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-FILT-A41"
+        ],
+        "distractor_ids": [
+          "DOC-AHU-VFD"
+        ]
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-FILT-A41",
+          "DOC-RTU-A11"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 15.9728,
+        "trace_id": "745e5c04d7fc4469948a4489ea3e054e"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-16",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "skip",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ASK",
+        "reason": null,
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 21.7197,
+        "trace_id": "d8b8b3e058d54b82a2d025fef08cad89"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": false,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": false,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-17",
+      "tier": "E2E",
+      "expected": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "out_of_domain",
+        "retrieval_behavior": "not_applicable",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "OUT_OF_SCOPE",
+        "decision": "ABSTAIN",
+        "reason": "out_of_domain",
+        "retrieval_behavior": "not_run",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 0.0104,
+        "trace_id": "a6ec44b0df1a4dd7924bb30c3f22fd41"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": true,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-18",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "skip",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-A11",
+          "DOC-RTU-CYCLE"
+        ],
+        "pulled_distractors": [
+          "DOC-RTU-CYCLE"
+        ],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 17.9932,
+        "trace_id": "fe7f99c90eb6470f9637f000d08bc292"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": false,
+        "retrieval_source_correct": null,
+        "distractor_pulled": true,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-21",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "low_confidence",
+        "retrieval_behavior": "skip",
+        "retrieval_ids": [],
+        "distractor_ids": []
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ESCALATE",
+        "reason": "evidence_unresolvable",
+        "retrieval_behavior": "no_retrieval",
+        "retrieved_ids": [],
+        "pulled_distractors": [],
+        "answer_grounded": null,
+        "output_contract_valid": true,
+        "latency_s": 5.2789,
+        "trace_id": "efe6591c5a3c42358439bf93c02d15bd"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": false,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": null,
+        "distractor_pulled": false,
+        "grounding_correct": null,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    },
+    {
+      "id": "ARC-22",
+      "tier": "E2E",
+      "expected": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "required",
+        "retrieval_ids": [
+          "DOC-RTU-A11"
+        ],
+        "distractor_ids": [
+          "DOC-RTU-CYCLE"
+        ]
+      },
+      "observed": {
+        "route": "INVESTIGATE",
+        "decision": "ANSWER",
+        "reason": null,
+        "retrieval_behavior": "retrieved",
+        "retrieved_ids": [
+          "DOC-RTU-A11",
+          "DOC-FILT-A41"
+        ],
+        "pulled_distractors": [],
+        "answer_grounded": true,
+        "output_contract_valid": true,
+        "latency_s": 17.7532,
+        "trace_id": "2eb68460b7fd4743a86e5cb07090f3ca"
+      },
+      "scores": {
+        "route_correct": true,
+        "decision_correct": true,
+        "reason_correct": null,
+        "retrieval_behavior_correct": true,
+        "retrieval_source_correct": true,
+        "distractor_pulled": false,
+        "grounding_correct": true,
+        "output_contract_valid": true,
+        "structured_output_valid": true
+      }
+    }
+  ]
+}

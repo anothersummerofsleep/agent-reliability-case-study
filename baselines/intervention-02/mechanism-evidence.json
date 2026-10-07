@@ -1,0 +1,1219 @@
+{
+  "source": "parsed from the five local diagnostic logs intv2-run-01..05.log (logs are gitignored; this file is the committed, auditable extract)",
+  "implementation_sha": "247441ef803d932687c81a3327d6b410f6999aa6",
+  "model": "google_genai:gemini-3.8-flash",
+  "mechanism_counts": {
+    "arc07_final_conflict_true": "5/5",
+    "arc07_gap_none": "5/5",
+    "arc07_ASK": "0/5",
+    "arc08_conflict_escalate": "5/5",
+    "false_conflict_cases": "none"
+  },
+  "per_run": {
+    "run-01": {
+      "ARC-01": {
+        "triage": {
+          "suff": "True",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-02": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-03": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-06": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-07": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "True",
+          "triage_conflict": "True",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": true,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-08": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": true,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-09": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "True"
+        },
+        "final_conflict": false,
+        "final_gap": "True",
+        "decision": "ASK"
+      },
+      "ARC-10": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-13": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-14": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-15": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-16": {
+        "triage": {
+          "suff": "True",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ASK"
+      },
+      "ARC-18": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-21": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-22": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      }
+    },
+    "run-02": {
+      "ARC-01": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-02": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-03": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-06": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-07": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "True",
+          "triage_conflict": "True",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": true,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-08": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": true,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-09": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "True"
+        },
+        "final_conflict": false,
+        "final_gap": "True",
+        "decision": "ASK"
+      },
+      "ARC-10": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-13": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-14": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-15": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-16": {
+        "triage": {
+          "suff": "True",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-18": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-21": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-22": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      }
+    },
+    "run-03": {
+      "ARC-01": {
+        "triage": {
+          "suff": "True",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-02": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "True"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "True",
+        "decision": "ESCALATE"
+      },
+      "ARC-03": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-06": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-07": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "True",
+          "triage_conflict": "True",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": true,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-08": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": true,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-09": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "True"
+        },
+        "final_conflict": false,
+        "final_gap": "True",
+        "decision": "ASK"
+      },
+      "ARC-10": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "False"
+        },
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ANSWER"
+      },
+      "ARC-13": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-14": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-15": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-16": {
+        "triage": {
+          "suff": "True",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ASK"
+      },
+      "ARC-18": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-21": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-22": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      }
+    },
+    "run-04": {
+      "ARC-01": {
+        "triage": {
+          "suff": "True",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-02": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-03": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-06": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-07": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "True",
+          "triage_conflict": "True",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": true,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-08": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": true,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-09": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "True"
+        },
+        "final_conflict": false,
+        "final_gap": "True",
+        "decision": "ASK"
+      },
+      "ARC-10": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-13": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-14": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-15": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-16": {
+        "triage": {
+          "suff": "True",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-18": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-21": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-22": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      }
+    },
+    "run-05": {
+      "ARC-01": {
+        "triage": {
+          "suff": "True",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-02": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "True"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "True",
+        "decision": "ESCALATE"
+      },
+      "ARC-03": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-06": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "True",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-07": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "True",
+          "triage_conflict": "True",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": true,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-08": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "True",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": true,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-09": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "True"
+        },
+        "final_conflict": false,
+        "final_gap": "True",
+        "decision": "ASK"
+      },
+      "ARC-10": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-13": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ESCALATE"
+      },
+      "ARC-14": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-15": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-16": {
+        "triage": {
+          "suff": "True",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-18": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "None"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      },
+      "ARC-21": {
+        "triage": {
+          "suff": "False",
+          "retr": "False",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": null,
+        "final_conflict": false,
+        "final_gap": "False",
+        "decision": "ESCALATE"
+      },
+      "ARC-22": {
+        "triage": {
+          "suff": "False",
+          "retr": "True",
+          "tele": "False",
+          "conflict": "False",
+          "gap": "False"
+        },
+        "retrieval": {
+          "final_conflict": "False",
+          "triage_conflict": "False",
+          "assess_conflict": "False",
+          "gap": "None"
+        },
+        "final_conflict": false,
+        "final_gap": "None",
+        "decision": "ANSWER"
+      }
+    }
+  }
+}

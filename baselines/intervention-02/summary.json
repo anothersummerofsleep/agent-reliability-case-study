@@ -1,0 +1,235 @@
+{
+  "experiment": "Controlled Intervention 2 - monotonic Investigator conflict preservation",
+  "implementation_sha": "247441ef803d932687c81a3327d6b410f6999aa6",
+  "comparator_arm_sha": "a3c81b46cce24d65190e2cb47576cd4c176c5eec",
+  "model": "google_genai:gemini-3.8-flash",
+  "dataset": "incidents.seed.jsonl",
+  "tier": "E2E",
+  "n_cases": 20,
+  "post_change_runs": 5,
+  "langsmith_tracing": false,
+  "infrastructure_retries": [],
+  "change": "Investigator retrieval branch: evidence_conflict = (plan.evidence_conflict is True) or (assessment.evidence_conflict is True)",
+  "primary_mechanism": {
+    "arc07_conflict_survival": {
+      "pre_repeated": "0/10",
+      "accepted_arm": "0/5",
+      "intervention_02": "5/5"
+    },
+    "arc07_ask": {
+      "accepted_arm": "0/5",
+      "intervention_02": "0/5",
+      "note": "conflict now survives 5/5 and reaches policy rule 4, but the Investigator's gap_user_resolvable is None 5/5 (assess step never marks the contemporaneous conflict requester-resolvable), so rule 4 yields ESCALATE(conflict_unresolvable), not ASK. This is a SEPARATE downstream gap-classification issue, not the conflict mechanism."
+    },
+    "arc07_decision": "ESCALATE(conflict_unresolvable) 5/5 (gold ASK) - still a decision miss via a cleanly-identified second cause"
+  },
+  "regression_checks": {
+    "arc08": {
+      "result": "ESCALATE(conflict_unresolvable) 5/5 - unchanged, no degradation"
+    },
+    "false_conflict_surface": {
+      "result": "NONE - no non-gold-conflict case (outside ARC-07/08) acquired evidence_conflict=True or a conflict-driven decision in any of the 5 runs"
+    }
+  },
+  "dimension_distributions": {
+    "route_correct": {
+      "accepted_a3c81b4": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "intervention_02": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "delta_mean": 0
+    },
+    "decision_correct": {
+      "accepted_a3c81b4": {
+        "runs": [
+          16,
+          18,
+          15,
+          16,
+          15
+        ],
+        "mean": 16
+      },
+      "intervention_02": {
+        "runs": [
+          16,
+          16,
+          16,
+          16,
+          16
+        ],
+        "mean": 16
+      },
+      "delta_mean": 0
+    },
+    "reason_correct": {
+      "accepted_a3c81b4": {
+        "runs": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "mean": 7
+      },
+      "intervention_02": {
+        "runs": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "mean": 7
+      },
+      "delta_mean": 0
+    },
+    "retrieval_behavior_correct": {
+      "accepted_a3c81b4": {
+        "runs": [
+          18,
+          17,
+          17,
+          17,
+          17
+        ],
+        "mean": 17.2
+      },
+      "intervention_02": {
+        "runs": [
+          17,
+          17,
+          17,
+          16,
+          17
+        ],
+        "mean": 16.8
+      },
+      "delta_mean": -0.4
+    },
+    "retrieval_source_correct": {
+      "accepted_a3c81b4": {
+        "runs": [
+          9,
+          8,
+          8,
+          8,
+          8
+        ],
+        "mean": 8.2
+      },
+      "intervention_02": {
+        "runs": [
+          8,
+          8,
+          8,
+          7,
+          8
+        ],
+        "mean": 7.8
+      },
+      "delta_mean": -0.4
+    },
+    "grounding_correct": {
+      "accepted_a3c81b4": {
+        "runs": [
+          5,
+          7,
+          5,
+          6,
+          5
+        ],
+        "mean": 5.6
+      },
+      "intervention_02": {
+        "runs": [
+          6,
+          6,
+          7,
+          5,
+          6
+        ],
+        "mean": 6
+      },
+      "delta_mean": 0.4
+    },
+    "output_contract_valid": {
+      "accepted_a3c81b4": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "intervention_02": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "delta_mean": 0
+    },
+    "structured_output_valid": {
+      "accepted_a3c81b4": {
+        "runs": [
+          17,
+          19,
+          18,
+          19,
+          19
+        ],
+        "mean": 18.4
+      },
+      "intervention_02": {
+        "runs": [
+          20,
+          19,
+          20,
+          18,
+          19
+        ],
+        "mean": 19.2
+      },
+      "delta_mean": 0.8
+    }
+  },
+  "latency_note": "intv2 mean latency ~10.2s vs accepted-arm ~6.8s; the change is a single boolean so a code cause is implausible, but a provider-variance attribution is not established from these 5 runs - reported as observed only.",
+  "verdict": "PARTIALLY SUPPORTED. The conflict-preservation MECHANISM works: ARC-07 final evidence_conflict=True 5/5 (pre 0/10, accepted-arm 0/5), ARC-08 ESCALATE(conflict_unresolvable) preserved 5/5, and no non-gold-conflict case acquired a conflict in the scanned runs. BUT (a) ARC-07's final DECISION did not improve - it is ESCALATE(conflict_unresolvable) 5/5, not ASK, deterministically gated by a SEPARATE downstream issue (gap_user_resolvable=None from the assess step); and (b) the mechanism is NOT visible in the run artifacts themselves - the harness does not persist evidence_conflict/gap/escalation reason for ASK-expected cases - so the evidence is the preserved mechanism-evidence.json derived from the five local logs, not the run JSON alone. Per the pre-registered criteria this is partial: implementation + ARC-08 fully supported, ARC-07 mechanism supported via the derived evidence, final decision unchanged, and the no-regression / 'comparable dimensions' claims are descriptive over 5 runs, not statistically established.",
+  "remaining_untouched_clusters": [
+    "ARC-03 telemetry catch-all",
+    "ARC-18 over-retrieval",
+    "ARC-21 evidence sufficiency",
+    "ARC-07 gap-classification (NEW, next candidate): assess marks a requester-confirmable conflict gap_user_resolvable=None"
+  ],
+  "note_artifact_baseline_field": "each run artifact's internal 'baseline' field is a hardcoded harness constant ('v1'); experiment identity is path + recorded git_commit (247441e).",
+  "mechanism_evidence_file": "baselines/intervention-02/mechanism-evidence.json",
+  "codex_post_review": {
+    "verdict": "BLOCKER (auditability)",
+    "resolution": "run artifacts do not persist Investigator conflict/gap/escalation-reason for ASK-expected cases; preserved the parsed mechanism-evidence.json from the five diagnostic logs and downgraded the verdict to PARTIALLY SUPPORTED; evaluator semantics left unchanged mid-experiment (persisting those fields is a future evaluator change, not part of this intervention)."
+  },
+  "dimension_note": "deltas are small and non-systematic across the 5 runs (described as comparable, not a statistical no-change claim; no noise distribution was estimated)."
+}
