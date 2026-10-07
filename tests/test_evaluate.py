@@ -197,6 +197,51 @@ def test_aggregate_survives_exception_shaped_result():
     assert agg["distractor_resistance"]["clean"] == 1
 
 
+def test_mechanism_state_exposes_actual_graph_state():
+    from agent_reliability.enums import EscalationReason
+    from agent_reliability.evaluate import mechanism_state
+
+    s = _state("ARC-X", route=Route.INVESTIGATE, decision=Decision.ESCALATE,
+               escalation_reason=EscalationReason.CONFLICT_UNRESOLVABLE,
+               evidence_conflict=True, gap_user_resolvable=False, evidence_sufficient=True,
+               tool_failed=False, confidence=Confidence.MEDIUM, proposed_answer="x")
+    ms = mechanism_state(s)
+    assert ms["evidence_conflict"] is True
+    assert ms["gap_user_resolvable"] is False
+    assert ms["confidence"] == "medium"
+    assert ms["has_proposed_answer"] is True
+    assert ms["decision"] == "ESCALATE"
+    assert ms["escalation_reason"] == "conflict_unresolvable"
+
+
+def test_mechanism_state_preserves_nulls():
+    from agent_reliability.evaluate import mechanism_state
+
+    ms = mechanism_state(_state("ARC-X", route=Route.INVESTIGATE, decision=Decision.ANSWER))
+    assert ms["evidence_conflict"] is None  # never coerced to False
+    assert ms["gap_user_resolvable"] is None
+    assert ms["confidence"] is None
+    assert ms["has_proposed_answer"] is False
+    assert ms["escalation_reason"] is None
+
+
+def test_mechanism_state_in_observed_without_changing_scores():
+    case = CASES["ARC-01"]
+    s = _state("ARC-01", route=Route.INVESTIGATE, decision=Decision.ANSWER, answer_grounded=True,
+               evidence=[_incident("ARC-01"), _manual("DOC-RTU-A11")], evidence_conflict=False,
+               confidence=Confidence.HIGH, proposed_answer="do x")
+    r = score_case(case, s, contract_valid=True, latency_s=0.2)
+    # scoring unchanged (same keys/values as before instrumentation)
+    assert r.scores["decision_correct"] is True and r.scores["grounding_correct"] is True
+    # observability present and faithful
+    assert r.observed["mechanism_state"]["decision"] == "ANSWER"
+    assert r.observed["mechanism_state"]["evidence_conflict"] is False
+    # no secrets / credentials leak into the artifact record
+    import json as _json
+    blob = _json.dumps(r.observed).lower()
+    assert "api" not in blob and "key" not in blob and "secret" not in blob and "token" not in blob
+
+
 def test_median_even_count():
     from agent_reliability.evaluate import _median
 

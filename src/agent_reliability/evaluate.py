@@ -62,6 +62,24 @@ def observed_retrieval_behavior(state: GraphState) -> str:
     return "retrieved" if retrieved_ids(state) else "no_retrieval"
 
 
+def mechanism_state(state: GraphState) -> dict:
+    """Serialize the already-computed terminal graph state for experiment auditability.
+    Observability only: no recomputation, no reinterpretation, no scoring impact. Optional
+    values stay null (never coerced)."""
+    return {
+        "evidence_sufficient": state.evidence_sufficient,
+        "evidence_conflict": state.evidence_conflict,
+        "gap_user_resolvable": state.gap_user_resolvable,
+        "tool_failed": state.tool_failed,
+        "confidence": state.confidence.value if state.confidence else None,
+        "has_proposed_answer": state.proposed_answer is not None,
+        "answer_grounded": state.answer_grounded,
+        "decision": state.decision.value if state.decision else None,
+        "escalation_reason": state.escalation_reason.value if state.escalation_reason else None,
+        "abstain_reason": state.abstain_reason.value if state.abstain_reason else None,
+    }
+
+
 def _reason_fields(case: SeedCase, state: GraphState):
     """Return (expected_reason_value, observed_reason_value) or (None, None) if n/a."""
     if case.expected_decision is Decision.ESCALATE:
@@ -158,6 +176,7 @@ def score_case(
             "output_contract_valid": contract_valid,
             "latency_s": round(latency_s, 4),
             "trace_id": state.trace_id,
+            "mechanism_state": mechanism_state(state),
         },
         scores={
             "route_correct": route_correct,
@@ -286,6 +305,7 @@ def run_baseline(
                         "pulled_distractors": [],
                         "output_contract_valid": False,
                         "latency_s": round(latency, 4),
+                        "mechanism_state": None,
                     },
                     scores={
                         "route_correct": False,
