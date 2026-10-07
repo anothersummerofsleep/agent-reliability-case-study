@@ -210,18 +210,25 @@ class Investigator:
             query = assessment.more_query or query
 
         assert assessment is not None  # MAX_RETRIEVAL_ATTEMPTS >= 1
+        # Monotonic conflict: once triage establishes a genuine conflict, retrieval may add
+        # information but must not silently erase it just because the later assessment fails
+        # to repeat it. Scoped to this single Investigator run (plan + assessment are local),
+        # never sticky across incidents or graph executions.
+        final_conflict = (plan.evidence_conflict is True) or (assessment.evidence_conflict is True)
         logger.info(
-            "RETRIEVAL id=%s retrieved=%s sufficient=%s conflict=%s gap=%s",
+            "RETRIEVAL id=%s retrieved=%s sufficient=%s conflict=%s(triage=%s,assess=%s) gap=%s",
             state.incident_id,
             retrieved,
             assessment.evidence_sufficient,
+            final_conflict,
+            plan.evidence_conflict,
             assessment.evidence_conflict,
             assessment.gap_user_resolvable,
         )
         return {
             "evidence": evidence,
             "evidence_sufficient": assessment.evidence_sufficient,
-            "evidence_conflict": assessment.evidence_conflict,
+            "evidence_conflict": final_conflict,
             "gap_user_resolvable": assessment.gap_user_resolvable,
             "tool_failed": False,
         }

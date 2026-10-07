@@ -119,6 +119,77 @@ def test_default_telemetry_raises():
         default_telemetry(_state())
 
 
+def _inv(tri_conflict, assess_conflict, *, gap=None, sufficient=True):
+    return Investigator(
+        triage=lambda s: TriagePlan(
+            supplied_sufficient=False, needs_retrieval=True, retrieval_query="NW-A21 sensor",
+            evidence_conflict=tri_conflict,
+        ),
+        assess=lambda s, e: EvidenceAssessment(
+            evidence_sufficient=sufficient, evidence_conflict=assess_conflict, gap_user_resolvable=gap,
+        ),
+        retriever=default_retriever(),
+    )
+
+
+def test_merge_triage_true_assess_false_stays_true():
+    assert _inv(True, False)(_state())["evidence_conflict"] is True
+
+
+def test_merge_triage_false_assess_true_becomes_true():
+    assert _inv(False, True)(_state())["evidence_conflict"] is True
+
+
+def test_merge_triage_false_assess_false_stays_false():
+    assert _inv(False, False)(_state())["evidence_conflict"] is False
+
+
+def test_clean_noncved_case_unaffected():
+    # No conflict anywhere -> final conflict False, no spurious conflict introduced.
+    out = _inv(False, False, sufficient=True)(_state())
+    assert out["evidence_conflict"] is False
+    assert out["tool_failed"] is False
+
+
+def test_arc07_path_conflict_survives_to_ask():
+    # triage detects conflict, reassessment drops it, gap resolvable -> policy rule 4 ASK.
+    from agent_reliability.enums import Decision
+    from agent_reliability.graph import run_incident
+
+    s = run_incident(
+        "ARC-07x",
+        "RTU-40 unit 2 NW-A21 sensor fault; BAS SAT 13C but handheld reads 20C same time.",
+        evidence_fn=_inv(True, False, gap=True),
+        diagnose_fn=lambda st: DiagnosisOutputStub(),
+    )
+    assert s.evidence_conflict is True
+    assert s.decision is Decision.ASK
+
+
+def test_arc08_path_conflict_unresolvable_preserved():
+    # Conflict preserved with gap not resolvable -> ESCALATE(conflict_unresolvable), unchanged.
+    from agent_reliability.enums import Decision, EscalationReason
+    from agent_reliability.graph import run_incident
+
+    s = run_incident(
+        "ARC-08x",
+        "CH-2 BAS CHWS 6C vs field gauge 9C same times; no offsite reference, no technician.",
+        evidence_fn=_inv(True, False, gap=False),
+        diagnose_fn=lambda st: DiagnosisOutputStub(),
+    )
+    assert s.evidence_conflict is True
+    assert s.decision is Decision.ESCALATE
+    assert s.escalation_reason is EscalationReason.CONFLICT_UNRESOLVABLE
+
+
+class DiagnosisOutputStub:
+    # Minimal stand-in; never reached on the conflict short-circuit paths above.
+    confidence = None
+    proposed_answer = None
+    hypotheses: list = []
+    gap_user_resolvable = None
+
+
 class _FailingRetriever:
     def search(self, query, k=2):
         raise RuntimeError("retrieval backend down")
