@@ -154,6 +154,13 @@ class Investigator:
             (plan.retrieval_query or "")[:80],
         )
 
+        # Observed triage choices, surfaced into state for experiment auditability only.
+        # These record what triage decided; nothing downstream reads them.
+        triage_obs = {
+            "triage_needs_retrieval": plan.needs_retrieval,
+            "triage_needs_live_telemetry": plan.needs_live_telemetry,
+        }
+
         # Live-telemetry branch: attempt the (unbacked) tool with bounded retries.
         if plan.needs_live_telemetry:
             if self._telemetry_fails(state):
@@ -163,6 +170,7 @@ class Investigator:
                     "evidence_conflict": False,
                     "gap_user_resolvable": plan.gap_user_resolvable,
                     "tool_failed": True,
+                    **triage_obs,
                 }
 
         # Skip-retrieval branch: triage doubles as the assessment.
@@ -173,6 +181,7 @@ class Investigator:
                 "evidence_conflict": plan.evidence_conflict,
                 "gap_user_resolvable": plan.gap_user_resolvable,
                 "tool_failed": False,
+                **triage_obs,
             }
 
         # Bounded retrieval branch.
@@ -191,6 +200,7 @@ class Investigator:
                     "evidence_conflict": False,
                     "gap_user_resolvable": plan.gap_user_resolvable,
                     "tool_failed": True,
+                    **triage_obs,
                 }
             for hit in hits:
                 if hit.doc_id in retrieved:
@@ -231,6 +241,7 @@ class Investigator:
             "evidence_conflict": final_conflict,
             "gap_user_resolvable": assessment.gap_user_resolvable,
             "tool_failed": False,
+            **triage_obs,
         }
 
     def _telemetry_fails(self, state: GraphState) -> bool:

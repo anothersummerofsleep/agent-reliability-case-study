@@ -59,6 +59,11 @@ class GraphState(BaseModel):
     evidence_conflict: Optional[bool] = None
     gap_user_resolvable: Optional[bool] = None
     tool_failed: Optional[bool] = None
+    # Observed triage choices, recorded for experiment auditability only. These mirror
+    # what the triage step decided (which evidence source it asked for); nothing
+    # downstream (policy, graph, output contract) reads them.
+    triage_needs_retrieval: Optional[bool] = None
+    triage_needs_live_telemetry: Optional[bool] = None
 
     # --- Diagnosis Specialist (present iff it ran) ---
     confidence: Optional[Confidence] = None

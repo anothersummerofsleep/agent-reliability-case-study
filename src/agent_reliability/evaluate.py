@@ -71,6 +71,8 @@ def mechanism_state(state: GraphState) -> dict:
         "evidence_conflict": state.evidence_conflict,
         "gap_user_resolvable": state.gap_user_resolvable,
         "tool_failed": state.tool_failed,
+        "triage_needs_retrieval": state.triage_needs_retrieval,
+        "triage_needs_live_telemetry": state.triage_needs_live_telemetry,
         "confidence": state.confidence.value if state.confidence else None,
         "has_proposed_answer": state.proposed_answer is not None,
         "answer_grounded": state.answer_grounded,

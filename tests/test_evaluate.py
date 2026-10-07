@@ -225,6 +225,25 @@ def test_mechanism_state_preserves_nulls():
     assert ms["escalation_reason"] is None
 
 
+def test_mechanism_state_serializes_triage_choices():
+    from agent_reliability.evaluate import mechanism_state
+
+    s = _state("ARC-X", route=Route.INVESTIGATE, decision=Decision.ESCALATE,
+               triage_needs_retrieval=True, triage_needs_live_telemetry=False)
+    ms = mechanism_state(s)
+    assert ms["triage_needs_retrieval"] is True  # actual observed value, not inferred
+    assert ms["triage_needs_live_telemetry"] is False
+
+
+def test_mechanism_state_triage_choices_preserve_nulls():
+    from agent_reliability.evaluate import mechanism_state
+
+    # Investigator never ran (safety/scope short-circuit): fields stay null, not coerced.
+    ms = mechanism_state(_state("ARC-X", route=Route.OUT_OF_SCOPE, decision=Decision.ABSTAIN))
+    assert ms["triage_needs_retrieval"] is None
+    assert ms["triage_needs_live_telemetry"] is None
+
+
 def test_mechanism_state_in_observed_without_changing_scores():
     case = CASES["ARC-01"]
     s = _state("ARC-01", route=Route.INVESTIGATE, decision=Decision.ANSWER, answer_grounded=True,

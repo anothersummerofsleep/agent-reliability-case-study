@@ -209,6 +209,40 @@ def test_retrieval_failure_exposed_as_tool_failed():
     assert out["evidence_sufficient"] is False
 
 
+def test_triage_choices_surfaced_on_skip_branch():
+    # Observability: the skip branch records the actual triage choices into state.
+    inv = Investigator(
+        triage=lambda s: TriagePlan(supplied_sufficient=True, needs_retrieval=False),
+        assess=lambda s, e: EvidenceAssessment(evidence_sufficient=True),
+        retriever=default_retriever(),
+    )
+    out = inv(_state())
+    assert out["triage_needs_retrieval"] is False
+    assert out["triage_needs_live_telemetry"] is False
+
+
+def test_triage_choices_surfaced_on_retrieval_branch():
+    inv = Investigator(
+        triage=lambda s: TriagePlan(supplied_sufficient=False, needs_retrieval=True, retrieval_query="NW-A11"),
+        assess=lambda s, e: EvidenceAssessment(evidence_sufficient=True),
+        retriever=default_retriever(),
+    )
+    out = inv(_state())
+    assert out["triage_needs_retrieval"] is True
+    assert out["triage_needs_live_telemetry"] is False
+
+
+def test_triage_choices_surfaced_on_telemetry_failure_branch():
+    inv = Investigator(
+        triage=lambda s: TriagePlan(supplied_sufficient=False, needs_retrieval=False, needs_live_telemetry=True),
+        assess=lambda s, e: EvidenceAssessment(evidence_sufficient=True),
+        retriever=default_retriever(),
+    )
+    out = inv(_state("Pull RTU-50 unit 1 last 24h telemetry and tell me why it trips NW-A51."))
+    assert out["tool_failed"] is True
+    assert out["triage_needs_live_telemetry"] is True  # recorded even on the failing-tool path
+
+
 def test_gap_passthrough_from_triage_on_skip():
     inv = Investigator(
         triage=lambda s: TriagePlan(
