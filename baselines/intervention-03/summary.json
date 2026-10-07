@@ -1,0 +1,248 @@
+{
+  "experiment": "Controlled Intervention 3 - Investigator requester-resolvability classification for conflicts",
+  "auditability_checkpoint_sha": "baf279891b2a864906913600c283505aee0346fe",
+  "implementation_sha": "214924edd633bc1fc0f9e39b2e61f0392ff64b12",
+  "comparator": "Intervention 2 (247441e) 5-run arm",
+  "model": "google_genai:gemini-3.8-flash",
+  "dataset": "incidents.seed.jsonl",
+  "tier": "E2E",
+  "n_cases": 20,
+  "post_change_runs": 5,
+  "langsmith_tracing": false,
+  "infrastructure_retries": [],
+  "change": "Investigator _ASSESS_SYSTEM prompt: when readings genuinely conflict, classify gap_user_resolvable (true=requester can supply/repeat/confirm a discriminator; false=needs technician/expert/inspection/unavailable instrument) and never leave it null for a genuine unresolved conflict.",
+  "primary_mechanism": {
+    "arc07_gap_true": {
+      "intervention_02": "0/5",
+      "intervention_03": "0/5"
+    },
+    "arc07_ask": {
+      "intervention_02": "0/5",
+      "intervention_03": "0/5"
+    },
+    "arc07_final_conflict": "True 5/5 (preserved by Intervention 2)",
+    "arc07_assess_own_conflict": "False 5/5 - established from the diagnostic LOGS (the RETRIEVAL line's assess conflict), NOT from the run artifacts, which persist only the final merged evidence_conflict=True. The assess model does not register the SAT readings as a genuine conflict (it reconciles them as a sensor fault), so the resolvability instruction (gated on a perceived conflict) never engages and gap stays None.",
+    "arc07_decision": "ESCALATE(conflict_unresolvable) 5/5 (gold ASK) - unchanged"
+  },
+  "contrast_arc08": {
+    "gap": "False 5/5",
+    "decision": "ESCALATE(conflict_unresolvable) 5/5",
+    "result": "correct and preserved (was already correct pre-intervention)"
+  },
+  "regression_surface": {
+    "false_resolvability_or_spurious_ask": [
+      {
+        "run": 2,
+        "case": "ARC-16",
+        "observed": "gap_user_resolvable=True, decision=ASK (gold ANSWER/skip)",
+        "note": "1 of 5 runs only; ARC-16 is normally a skip case, so this required a triage variance into the retrieval branch; a minor, non-recurring blip, not a broad/material regression"
+      }
+    ]
+  },
+  "dimension_distributions": {
+    "route_correct": {
+      "intervention_02": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "intervention_03": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "delta_mean": 0
+    },
+    "decision_correct": {
+      "intervention_02": {
+        "runs": [
+          16,
+          16,
+          16,
+          16,
+          16
+        ],
+        "mean": 16
+      },
+      "intervention_03": {
+        "runs": [
+          18,
+          16,
+          14,
+          14,
+          17
+        ],
+        "mean": 15.8
+      },
+      "delta_mean": -0.2
+    },
+    "reason_correct": {
+      "intervention_02": {
+        "runs": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "mean": 7
+      },
+      "intervention_03": {
+        "runs": [
+          7,
+          7,
+          7,
+          7,
+          7
+        ],
+        "mean": 7
+      },
+      "delta_mean": 0
+    },
+    "retrieval_behavior_correct": {
+      "intervention_02": {
+        "runs": [
+          17,
+          17,
+          17,
+          16,
+          17
+        ],
+        "mean": 16.8
+      },
+      "intervention_03": {
+        "runs": [
+          17,
+          17,
+          16,
+          17,
+          17
+        ],
+        "mean": 16.8
+      },
+      "delta_mean": 0.0
+    },
+    "retrieval_source_correct": {
+      "intervention_02": {
+        "runs": [
+          8,
+          8,
+          8,
+          7,
+          8
+        ],
+        "mean": 7.8
+      },
+      "intervention_03": {
+        "runs": [
+          8,
+          8,
+          7,
+          8,
+          8
+        ],
+        "mean": 7.8
+      },
+      "delta_mean": 0.0
+    },
+    "grounding_correct": {
+      "intervention_02": {
+        "runs": [
+          6,
+          6,
+          7,
+          5,
+          6
+        ],
+        "mean": 6
+      },
+      "intervention_03": {
+        "runs": [
+          7,
+          6,
+          4,
+          4,
+          6
+        ],
+        "mean": 5.4
+      },
+      "delta_mean": -0.6
+    },
+    "output_contract_valid": {
+      "intervention_02": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "intervention_03": {
+        "runs": [
+          20,
+          20,
+          20,
+          20,
+          20
+        ],
+        "mean": 20
+      },
+      "delta_mean": 0
+    },
+    "structured_output_valid": {
+      "intervention_02": {
+        "runs": [
+          20,
+          19,
+          20,
+          18,
+          19
+        ],
+        "mean": 19.2
+      },
+      "intervention_03": {
+        "runs": [
+          20,
+          20,
+          18,
+          17,
+          18
+        ],
+        "mean": 18.6
+      },
+      "delta_mean": -0.6
+    }
+  },
+  "unrelated_variance_note": "decision 16->15.8, grounding 6->5.4, structured 19.2->18.6 do NOT pass through the changed conflict-gap classification (ARC-07/ARC-08 decisions are unchanged). The artifacts alone do not establish the specific cause, so this movement is reported as unrelated run-to-run model variance and is NOT attributed to this intervention. Latency 10.2->12.2s reported as observed only.",
+  "verdict": "FALSIFIED (stands on the artifact mechanism_state fields alone): ARC-07 gap=None 5/5, ESCALATE(conflict_unresolvable) 5/5, ASK 0/5. Root cause, from the diagnostic logs (the artifacts persist only the final merged conflict): the assess step's own evidence_conflict is False 5/5, so a prompt instruction gated on a perceived conflict cannot engage for ARC-07 - the conflict exists only at the state level via Intervention 2's triage-OR merge, which the assess prompt never sees. ARC-08 stayed correctly unresolvable (already correct pre-intervention, so not evidence the intervention works). One minor spurious ASK (ARC-16, 1/5) - not materially harmful.",
+  "structural_finding": "Driving gap classification for a PRESERVED conflict purely from the assess prompt cannot work when the assess model itself does not register the conflict. A real fix would pass the triage-detected conflict into the assess step (so it classifies resolvability for the conflict that was actually detected) - a combined code+prompt change, a future candidate, NOT attempted here.",
+  "remaining_untouched_clusters": [
+    "ARC-03 telemetry catch-all",
+    "ARC-18 over-retrieval",
+    "ARC-21 evidence sufficiency",
+    "ARC-07 gap-classification (still open; needs triage-conflict passed into assess)"
+  ],
+  "note_artifact_baseline_field": "internal 'baseline' field is a hardcoded harness constant; experiment identity = path + git_commit 214924e.",
+  "codex_post_review": {
+    "verdict": "MATERIAL",
+    "confirmed": [
+      "ARC-07 FALSIFIED on artifact fields",
+      "ARC-08 preserved 5/5",
+      "single ARC-16 regression",
+      "aggregate counts + intv2 deltas correct"
+    ],
+    "resolution": "corrected two interpretation overstatements: the assess-own-conflict root cause is log-derived (not artifact-visible), and the decision/grounding movement is reported as unrelated variance rather than asserted as a specific cause. Outcome counts unchanged."
+  }
+}
