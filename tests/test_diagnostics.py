@@ -66,7 +66,7 @@ def test_grounding_exception_is_logged_and_leaves_none(caplog):
 def test_triage_is_logged(caplog):
     inv = Investigator(
         triage=lambda s: TriagePlan(supplied_sufficient=True, needs_retrieval=False, gap_user_resolvable=None),
-        assess=lambda s, e, p: EvidenceAssessment(evidence_sufficient=True),
+        assess=lambda s, e: EvidenceAssessment(evidence_sufficient=True),
         retriever=default_retriever(),
     )
     with caplog.at_level(logging.INFO, logger=LOGGER):

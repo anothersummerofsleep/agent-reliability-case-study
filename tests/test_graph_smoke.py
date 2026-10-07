@@ -101,7 +101,7 @@ def test_real_investigator_retrieval_reaches_answer():
             needs_retrieval=True,
             retrieval_query="NW-A11 high head pressure fouled condenser coil",
         ),
-        assess=lambda s, e, p: EvidenceAssessment(evidence_sufficient=True),
+        assess=lambda s, e: EvidenceAssessment(evidence_sufficient=True),
         retriever=default_retriever(),
     )
     s = run_incident(

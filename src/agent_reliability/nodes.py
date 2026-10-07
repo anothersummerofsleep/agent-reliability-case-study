@@ -106,7 +106,7 @@ class EvidenceAssessment(BaseModel):
 
 
 TriageFn = Callable[[GraphState], TriagePlan]
-AssessFn = Callable[[GraphState, list[Evidence], bool], EvidenceAssessment]
+AssessFn = Callable[[GraphState, list[Evidence]], EvidenceAssessment]
 TelemetryFn = Callable[[GraphState], None]  # raises on failure
 
 
@@ -204,11 +204,7 @@ class Investigator:
                         content=doc.text,
                     )
                 )
-            # Pass triage's conflict observation into reassessment as prior context so it can
-            # classify the resolvability of an already-observed conflict even if its own read
-            # differs. This does not force the assessment's conflict output; the monotonic merge
-            # below still combines triage OR assessment.
-            assessment = self.assess(state, evidence, plan.evidence_conflict is True)
+            assessment = self.assess(state, evidence)
             if assessment.evidence_sufficient or not assessment.needs_more_retrieval:
                 break
             query = assessment.more_query or query
@@ -267,17 +263,7 @@ _ASSESS_SYSTEM = (
     "contradiction in the readings), gap_user_resolvable (true if a missing detail the requester "
     "could supply would resolve it, false if it needs a technician/inspection, null if nothing is "
     "missing), and needs_more_retrieval (true only if one more lookup with a refined more_query is "
-    "clearly warranted). Reason only from the provided evidence. "
-    "You are also told whether an earlier Investigator stage already detected a genuine conflict in "
-    "this evidence (the 'Prior Investigator conflict detected' flag). A true prior flag means mutually "
-    "inconsistent evidence was observed earlier; do not ignore it merely because your own current "
-    "conflict read differs. Report your own evidence_conflict honestly (this flag does not force it to "
-    "true). But when the prior flag is true OR you identify a conflict now, you MUST classify "
-    "gap_user_resolvable rather than leaving it null: set it true if the requester can plausibly "
-    "resolve the conflict by providing, repeating, or confirming a discriminating observation "
-    "available to them (for example re-taking or re-confirming a reading from an instrument they can "
-    "access); set it false if resolving the conflict requires a technician, an expert, a physical "
-    "inspection, or a reference instrument the requester does not have."
+    "clearly warranted). Reason only from the provided evidence."
 )
 
 
@@ -295,14 +281,10 @@ def make_llm_investigator(model, retriever: BM25Retriever | None = None) -> Inve
         messages = [("system", _TRIAGE_SYSTEM), ("human", f"Incident: {state.incident_raw}")]
         return triage_model.invoke(messages)
 
-    def _assess(state: GraphState, evidence: list[Evidence], prior_conflict: bool) -> EvidenceAssessment:
+    def _assess(state: GraphState, evidence: list[Evidence]) -> EvidenceAssessment:
         messages = [
             ("system", _ASSESS_SYSTEM),
-            (
-                "human",
-                f"Prior Investigator conflict detected: {prior_conflict}\n\n"
-                f"Incident: {state.incident_raw}\n\nEvidence:\n{_evidence_block(evidence)}",
-            ),
+            ("human", f"Incident: {state.incident_raw}\n\nEvidence:\n{_evidence_block(evidence)}"),
         ]
         return assess_model.invoke(messages)
 
