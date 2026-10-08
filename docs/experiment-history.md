@@ -59,6 +59,20 @@ The frozen set is **22 cases**: **20 end-to-end (E2E)** cases that drive the ful
 closed-domain: every incident, alarm code, and manual is invented, and there is no proprietary, employer,
 or customer data of any kind.
 
+### Pre-baseline safety-detector hardening
+
+Before baseline capture, the deterministic safety detector's resolution scope was narrowed from
+sentence-wide to hazard-segment-local. Sentence-wide resolution could incorrectly suppress a
+still-active hazard when another hazard in the same sentence had already been resolved or isolated;
+because safety is the first policy rule, above scope, that would silently drop an `ESCALATE(safety)`.
+Resolution is now scoped to the hazard's own segment (`safety.py` splits on clause punctuation, commas,
+and "but"), which preserves the active hazard while still recognising genuinely resolved or isolated
+conditions. Negation stays clause-wide, so a leading "no" still distributes across a coordinated list
+("no smoke, fire, or burning smell"). Regression tests cover a resolved historical hazard followed by a
+new active hazard (`test_resolved_historical_then_new_active_hazard`) and isolation of one object
+alongside a separate active hazard (`test_isolation_of_other_object_does_not_suppress_active_hazard`).
+Implementation `522f43b`, tests `9667057`.
+
 ## 3. Baseline v1
 
 Baseline v1 ([`baselines/baseline-v1.json`](../baselines/baseline-v1.json)) is the first honest
