@@ -10,10 +10,11 @@ the project later. It complements the project [`README`](../README.md) and the a
 records under [`docs/decisions/`](decisions/), and it is the authoritative record of the full I1 to I7
 cycle and the current accepted behavior.
 
-Status at this checkpoint: project HEAD `bd9cb95`; accepted behavioral stack is **Intervention 1 +
-Intervention 2 + Intervention 5 + evaluator auditability**; Interventions 3, 4, 6, and 7 are preserved
-as rejected or falsified evidence. **Intervention 8 has not started** (a design-only review is recorded
-in section 7).
+Status at this checkpoint: the accepted **behavioral HEAD** is `bd9cb95` (the last commit that changed
+runtime behavior); later commits on `main` are documentation-only and do not change the accepted stack.
+The accepted behavioral stack is **Intervention 1 + Intervention 2 + Intervention 5 + evaluator
+auditability**; Interventions 3, 4, 6, and 7 are preserved as rejected or falsified evidence.
+**Intervention 8 has not started** (a design-only review is recorded in section 7).
 
 ## 1. Purpose and experimental method
 
@@ -206,7 +207,7 @@ downstream of the sufficiency gate, so the targets could not even exercise it.
 
 ## 5. Accepted active system at this checkpoint
 
-At project HEAD `bd9cb95`, the accepted behavioral stack is:
+At the accepted behavioral HEAD `bd9cb95`, the accepted behavioral stack is:
 
 - **I1**: Diagnosis confidence/answer coupling
 - **I2**: monotonic Investigator conflict preservation
@@ -318,6 +319,6 @@ most consistent reading is that it concerns the structured information crossing 
 Diagnosis boundary, a hypothesis the behavior-neutral I8A step is designed to test. The next planned
 experiment is the behavior-neutral I8A diagnostic-shape measurement.
 
-- Project HEAD: `bd9cb95`
+- Accepted behavioral HEAD: `bd9cb95` (later `main` commits are documentation-only)
 - Repository: private
 - Intervention 8: not started (design-only review recorded above)

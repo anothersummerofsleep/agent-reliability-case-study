@@ -17,6 +17,9 @@ venv/
 .env.*
 !.env.example
 
+# Local debug run output (never a canonical baseline; real baselines ARE committed)
+baselines/debug-run.json
+
 # Editors / OS
 .idea/
 .vscode/

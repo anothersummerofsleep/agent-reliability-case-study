@@ -1,9 +1,10 @@
 """Model factory - vendor-neutral, behind LangChain's standard abstraction.
 
 The thin Diagnosis call uses ``init_chat_model`` driven by the ``MODEL_ID`` env var
-(default ``google_genai:gemini-2.0-flash``), so the provider is swappable without
-touching graph code. Imports are lazy so the pure modules (contracts, policy, safety)
-can be imported and unit-tested without the model providers installed or configured.
+(default ``google_genai:gemini-3.8-flash``, the model Baseline v1 and the live experiments
+were run against), so the provider is swappable without touching graph code. Imports are
+lazy so the pure modules (contracts, policy, safety) can be imported and unit-tested
+without the model providers installed or configured.
 """
 
 from __future__ import annotations
@@ -11,7 +12,7 @@ from __future__ import annotations
 import os
 from typing import Any
 
-DEFAULT_MODEL_ID = "google_genai:gemini-2.0-flash"
+DEFAULT_MODEL_ID = "google_genai:gemini-3.8-flash"
 
 
 def make_chat_model(model_id: str | None = None, **kwargs: Any):

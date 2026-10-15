@@ -8,7 +8,7 @@ Reproducible baseline artifacts produced by the evaluation harness
 ## Generating `baseline-v1.json`
 
 ```bash
-cp .env.example .env       # GOOGLE_API_KEY, LANGSMITH_API_KEY, LANGSMITH_TRACING=true
+cp .env.example .env       # set GOOGLE_API_KEY; LangSmith tracing is optional (off by default)
 uv run python -m agent_reliability.evaluate baselines/baseline-v1.json
 ```
 

@@ -25,12 +25,17 @@ withdrawn as what was kept.
 ## Current status
 
 - Baseline v1 captured and preserved (poor dimensions kept as evidence, not tuned away).
-- Several controlled reliability interventions completed, each measured against the frozen set.
-- Repeated stochastic A/B used where single-run variance was insufficient.
-- Some interventions accepted, some falsified or reverted.
-- The active accepted implementation currently contains **Intervention 1** (Diagnosis
-  confidence/answer coupling) and **Intervention 2** (monotonic Investigator conflict preservation),
-  plus evaluator mechanism-state auditability instrumentation.
+- A full cycle of seven controlled interventions (I1 to I7) completed, each measured against the frozen
+  set; repeated stochastic A/B used where single-run variance was insufficient.
+- The active accepted implementation contains **Intervention 1** (Diagnosis confidence/answer coupling),
+  **Intervention 2** (monotonic Investigator conflict preservation), and **Intervention 5** (distinguishing
+  genuine telemetry acquisition from generic missing evidence), plus evaluator mechanism-state and triage
+  auditability instrumentation.
+- The rejected and falsified interventions (I3, I4, I6, I7) and their artifacts are preserved as
+  historical evidence, not deleted.
+- The full I1 to I7 experiment history, including what each change tested and why it was kept or reverted,
+  is in [`docs/experiment-history.md`](docs/experiment-history.md) (the authoritative record). The sections
+  below summarize only what is needed to understand the active system.
 
 ## Architecture
 
@@ -224,8 +229,29 @@ The experiment is preserved under `baselines/intervention-04/`. It is useful evi
 mechanism is not sufficient grounds to keep a change: a mechanism improvement that introduces a
 system-level regression should still be rejected.
 
-**The recurring lesson across I3 and I4: failed and rejected experiments remain part of the
-reliability record.**
+### Intervention 5: telemetry vs missing evidence (accepted)
+
+On ARC-03 the Investigator used `needs_live_telemetry` as a generic "more information needed" signal, so
+it tried the backendless telemetry tool, failed, never retrieved, and the policy produced an
+accidentally-correct `ESCALATE(tool_failure)` with the wrong evidence path and reason. The triage prompt
+was narrowed so telemetry means a genuine current-reading/telemetry-tool acquisition. After the change,
+ARC-03 stopped requesting telemetry (5/5), retrieved the correct document (5/5), and the tool-failure was
+eliminated, while the deliberate telemetry-failure case ARC-06 kept its telemetry path and
+`ESCALATE(tool_failure)` (5/5). ARC-03's final gold reason was still wrong, because repairing the
+evidence path exposed a separate sufficiency problem downstream, so I5 is kept for the corrected mechanism
+rather than a headline score gain. Lesson: an accidentally-correct decision can hide an incorrect mechanism.
+
+### Interventions 6 and 7, and the current direction
+
+Two later interventions were run and reverted: I6 (a shared evidence-sufficiency definition) and I7
+(Diagnosis confidence calibration). Both were partially informative but neither was accepted, and together
+they indicated that the remaining failures are most consistently explained by an information-loss boundary
+between evidence gathering and Diagnosis rather than by further prompt wording. That finding, the full
+per-run numbers, and a design-only architecture review (future work, not implemented) are documented in
+[`docs/experiment-history.md`](docs/experiment-history.md).
+
+**The recurring lesson across the reverted experiments (I3, I4, I6, I7): failed and rejected experiments
+remain part of the reliability record.**
 
 ## Reproducibility
 
