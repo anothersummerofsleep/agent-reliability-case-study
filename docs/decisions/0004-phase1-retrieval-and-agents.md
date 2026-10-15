@@ -25,8 +25,11 @@ The frozen Phase -1 contract, policy, enums, and dataset are authoritative and u
   validator exception/parse-failure -> left `None` -> terminal fallthrough -> `internal_error`.**
 - **Router unchanged.** Replacing the deterministic heuristic router is not in Phase 1 scope; its
   errors are recorded honestly in the baseline rather than hidden.
-- **Model** stays behind `init_chat_model`; the Phase-0-verified `google_genai:gemini-2.0-flash` is the
-  baseline model, recorded in the artifact. No model-comparison experiments.
+- **Model** stays behind `init_chat_model`; `google_genai:gemini-2.0-flash` was the planned Phase 1
+  baseline model. (Outcome: at execution that id returned model-not-found / HTTP 404, so the preserved
+  Baseline v1 was actually captured with `google_genai:gemini-3.8-flash`, which is the recorded artifact
+  model and the current default. See [0002-model-choice.md](0002-model-choice.md); the baseline artifact
+  itself is unchanged.) No model-comparison experiments.
 - **Evaluation** reports per dimension (route, decision, reason, retrieval-behavior, retrieval-source,
   distractor-resistance, grounding, structured-output validity, latency) with **no composite score**.
   UNIT-tier ARC-19/20 are excluded from model metrics.

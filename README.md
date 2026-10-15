@@ -9,6 +9,31 @@ reliability machinery around it: a deterministic decision policy the model canno
 per-dimension evaluation harness over a frozen case set, and a disciplined loop for changing one
 thing at a time and keeping or rejecting it on the evidence.
 
+## Results at a glance
+
+- **Evaluation set:** 22 frozen cases: 20 model-backed end-to-end cases and 2 deterministic
+  fault-injection cases.
+- **Offline test suite:** 107 deterministic tests (no API keys; model steps are injectable fakes).
+- **Accepted behavioral interventions:** I1 (Diagnosis confidence/answer coupling), I2 (monotonic
+  Investigator conflict preservation), I5 (live-telemetry evidence-source semantics).
+- **Rejected/falsified, preserved as evidence:** I3, I4, I6, I7.
+- **Release:** `v0.1.0`.
+
+The strongest single result is Intervention 1, measured with a repeated **5-control / 5-treatment** A/B
+(not a single run). These are the per-arm means of that one experiment:
+
+| Dimension (Intervention 1 A/B) | Control mean | Treatment mean |
+| --- | ---: | ---: |
+| Decision correctness | 13 / 20 | 16 / 20 |
+| Structured-output validity | 15 / 20 | 18.4 / 20 |
+| Grounding correctness | 2.4 / 7 | 5.6 / 7 |
+| High-confidence + null-answer states | 5.0 | 1.6 |
+
+These numbers describe **Intervention 1's control/treatment experiment specifically**, not a universal
+before/after for the whole system. They are descriptive, `n = 5` per arm, and are **not** a
+statistical-significance claim. The full I1 to I7 history, including what each change tested and why it
+was kept or reverted, is in [`docs/experiment-history.md`](docs/experiment-history.md).
+
 ## The core loop
 
 Every behavioral change in this project goes through the same loop:
@@ -309,7 +334,47 @@ This is a portfolio-scale engineering case study, not a production deployment.
 - Interventions are selected and judged against the same frozen case set, so there is a standing
   test-set adaptation risk: gains measured on these cases may not transfer to unseen incidents.
 
+## Future validation directions
+
+`v0.1.0` is a completed milestone, not an unfinished draft. The items below are candidate validation
+questions that future releases **may** explore; none is a committed deliverable or a missing requirement
+of v0.1.0, and none is implemented today.
+
+- **Unseen holdout evaluation:** a genuinely unseen case set built after the I1 to I7 development cycle,
+  to test whether the accepted interventions transfer beyond the frozen cases and to reduce the
+  test-set adaptation risk noted above.
+- **Metamorphic / perturbation testing:** paraphrased incidents, reordered evidence, irrelevant wording
+  changes, and benign distractor additions, checking whether decisions and reasoning stay stable when
+  the underlying facts do not change.
+- **Adversarial evidence testing:** conflicting passages, stronger distractors, unsupported claims,
+  prompt-injection-like instructions embedded in retrieved material, and provenance-manipulation
+  attempts, to probe whether evidence boundaries, provenance handling, grounding, and the deterministic
+  policy stay reliable under misleading input. The current system is not claimed to be hardened against
+  these.
+- **Expanded fault injection:** extending the deterministic philosophy of the current ARC-19/20 cases to
+  malformed structured output, model/API timeouts, retrieval failure, repeated tool failure, missing or
+  partial graph state, Grounding-validator failure, and unavailable evidence sources.
+- **Cross-model / provider replication:** repeating selected experiments on another supported
+  model/provider, to separate architecture-level findings from ones specific to Gemini 3.8 Flash. No
+  model-independence is claimed today.
+- **Confidence and selective-decision calibration:** whether confidence levels and the
+  `ANSWER | ASK | ESCALATE | ABSTAIN` behavior are calibrated against observed correctness and
+  uncertainty, which is broader than maximizing decision correctness.
+- **Retrieval stress testing:** the BM25 baseline under larger corpora, higher distractor density,
+  lexical mismatch, near-duplicate evidence, and different `k`, to find where retrieval becomes the
+  limiting component rather than replacing it preemptively.
+- **Deterministic invariant / property testing:** property-based checks for safety precedence,
+  fail-closed terminal behavior, monotonic conflict preservation, output-contract validity, impossible
+  state combinations, and policy invariance to irrelevant state.
+- **Reproducibility / framework-drift checks:** re-running the project against newer compatible versions
+  of LangGraph, LangChain, and the provider integrations, without changing the v0.1.0 historical artifacts.
+- **Latency and cost characterization:** latency distributions, token usage, model-call counts, and cost
+  per case, kept as separate metrics rather than collapsed into a composite score.
+
+Separately, one specific architectural experiment, a persisted "diagnostic shape" representation (I8), is
+already scoped as design-only in [`docs/experiment-history.md`](docs/experiment-history.md); it is distinct
+from the broader validation directions above and is likewise unimplemented.
+
 ## License
 
-No license yet. The repository is private during development; the publication and license decision is
-deferred to a dedicated pre-publication review.
+Released under the [MIT License](LICENSE).

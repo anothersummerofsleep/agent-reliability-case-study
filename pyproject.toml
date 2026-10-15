@@ -4,8 +4,8 @@ version = "0.0.1"
 description = "Evaluation-first LangGraph agent-reliability case study (portfolio-scale, fictional industrial-ops domain)"
 readme = "README.md"
 requires-python = ">=3.11"
-# License intentionally unset: this repo is private during development; the
-# license decision is part of the pre-publication review (see docs/decisions).
+license = "MIT"
+license-files = ["LICENSE"]
 dependencies = [
     "pydantic>=2.7",
     "langgraph>=0.2",

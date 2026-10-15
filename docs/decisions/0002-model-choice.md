@@ -20,3 +20,11 @@ and injected into the Diagnosis node, so it is swappable and testable.
 ## Testing
 Offline tests inject a fake `DiagnoseFn` returning a canned `DiagnosisOutput`, so the graph
 smoke test needs no key and no network.
+
+## Outcome (later update)
+`google_genai:gemini-2.0-flash` was the originally intended default. When the first real baseline
+was run, that model id returned model-not-found (HTTP 404) from the provider, so **Baseline v1 and all
+subsequent live experiments were captured with `google_genai:gemini-3.8-flash`** (recorded in the
+baseline artifact and in [`../experiment-history.md`](../experiment-history.md)). The current release
+default was therefore updated to `google_genai:gemini-3.8-flash`. The provider-neutral `MODEL_ID` /
+`init_chat_model` design above is unchanged; only the default id moved, and the model stays swappable.

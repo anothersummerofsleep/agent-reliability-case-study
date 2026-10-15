@@ -320,5 +320,5 @@ Diagnosis boundary, a hypothesis the behavior-neutral I8A step is designed to te
 experiment is the behavior-neutral I8A diagnostic-shape measurement.
 
 - Accepted behavioral HEAD: `bd9cb95` (later `main` commits are documentation-only)
-- Repository: private
+- Repository: public (MIT licensed); first public release `agent-reliability-v0.1.0`
 - Intervention 8: not started (design-only review recorded above)
