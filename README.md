@@ -1,5 +1,7 @@
 # Agent Reliability Case Study
 
+[![CI](https://github.com/anothersummerofsleep/agent-reliability-case-study/actions/workflows/ci.yml/badge.svg)](https://github.com/anothersummerofsleep/agent-reliability-case-study/actions/workflows/ci.yml)
+
 An evaluation-first LangGraph case study exploring how to make a small agent system measurable,
 fail-closed, and improvable through evidence rather than prompt intuition.
 
@@ -305,6 +307,19 @@ Do not overwrite the canonical `baselines/baseline-v1.json` (or any committed in
 those are the preserved record. Secrets are read from the environment only, and `.env` is gitignored.
 LangSmith tracing is optional and is not required for the persisted evaluation workflow.
 
+## Continuous integration
+
+A GitHub Actions workflow ([`.github/workflows/ci.yml`](.github/workflows/ci.yml)) runs on every pull
+request and every push to `main`. It installs the exact dependency set pinned in `uv.lock` on Python 3.11
+and runs the offline deterministic test suite with `pytest`. It uses no secrets and makes no model calls,
+so it has no inference cost and does not write to any committed evaluation artifact.
+
+CI does not run the model-backed evaluation (`agent_reliability.evaluate`) or live graph runs. Those need
+credentials, cost money per run, and are stochastic, so they stay manual, and their results are the
+committed artifacts under `baselines/`. A green CI run means the deterministic parts (contracts, policy,
+safety detector, retrieval, the nodes' fail-closed paths with fake models, and the scoring harness) behave
+as tested. It is not new evidence about model-level decision quality.
+
 ## Repository layout
 
 ```
@@ -352,8 +367,12 @@ of v0.1.0, and none is implemented today.
   policy stay reliable under misleading input. The current system is not claimed to be hardened against
   these.
 - **Expanded fault injection:** extending the deterministic philosophy of the current ARC-19/20 cases to
-  malformed structured output, model/API timeouts, retrieval failure, repeated tool failure, missing or
-  partial graph state, Grounding-validator failure, and unavailable evidence sources.
+  malformed structured output, model/API timeouts, other provider errors (rate limiting, an unavailable
+  or retired model), retrieval failure, repeated tool failure and retry exhaustion, missing, partial, or
+  contradictory graph state, Grounding-validator failure, and unavailable evidence sources.
+- **Concurrency and resource boundaries:** running cases in parallel to check that no state leaks
+  between runs, and that each case stays within bounded time, model-call, and retry budgets under
+  provider throttling.
 - **Cross-model / provider replication:** repeating selected experiments on another supported
   model/provider, to separate architecture-level findings from ones specific to Gemini 3.8 Flash. No
   model-independence is claimed today.
@@ -370,6 +389,8 @@ of v0.1.0, and none is implemented today.
   of LangGraph, LangChain, and the provider integrations, without changing the v0.1.0 historical artifacts.
 - **Latency and cost characterization:** latency distributions, token usage, model-call counts, and cost
   per case, kept as separate metrics rather than collapsed into a composite score.
+- **Operational observability:** whether the recorded run artifacts and optional traces are enough to
+  locate the first stage where a failed case diverged, without rerunning it.
 
 Separately, one specific architectural experiment, a persisted "diagnostic shape" representation (I8), is
 already scoped as design-only in [`docs/experiment-history.md`](docs/experiment-history.md); it is distinct
