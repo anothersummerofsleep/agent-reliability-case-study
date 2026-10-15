@@ -1,0 +1,33 @@
+# Offline CI: runs the deterministic pytest suite only.
+# No model calls, no API keys, no secrets. Model-backed evaluation stays manual.
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      # Belt and braces: tracing is already off by default and no key is provided.
+      LANGSMITH_TRACING: "false"
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies from uv.lock
+        run: uv sync --locked --extra dev
+
+      - name: Run offline tests
+        run: uv run --no-sync pytest
